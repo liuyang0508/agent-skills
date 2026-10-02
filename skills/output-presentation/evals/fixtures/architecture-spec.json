@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0",
+  "spec_id": "spec-001",
+  "request_id": "req-001",
+  "result_ref": {
+    "result_id": "result-001",
+    "revision": "1"
+  },
+  "decision": "selected",
+  "rationale": "用户需要理解组件关系，关系图配短说明可以直接展示连接和简化边界。",
+  "presentation": {
+    "primary": "diagram",
+    "secondary": [
+      "text"
+    ],
+    "format": "markdown",
+    "detail_level": "medium"
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "kind": "summary",
+      "source_block_ids": [],
+      "source_field": "result.summary",
+      "visibility": "visible"
+    },
+    {
+      "id": "s2",
+      "kind": "diagram",
+      "source_block_ids": [
+        "b1"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s3",
+      "kind": "evidence_and_limits",
+      "source_block_ids": [
+        "b1"
+      ],
+      "visibility": "visible"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "a1",
+      "operation": "inspect_evidence",
+      "target_block_ids": [
+        "b1"
+      ],
+      "goal_ids": [
+        "g1"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {
+        "evidence_ids": [
+          "src1"
+        ],
+        "uncertainty_ids": [
+          "u1"
+        ]
+      },
+      "prompt_text": "请核验 result-001 revision 1 中 b1 的 e1 关系，使用 src1 并说明 u1 的简化限制；示例来源不可读取时报告所需正文，不自行补造证据。"
+    }
+  ],
+  "preservation": {
+    "required_evidence_ids": [
+      "src1"
+    ],
+    "required_uncertainty_ids": [
+      "u1"
+    ],
+    "omitted_block_ids": []
+  },
+  "render_request": {
+    "renderer_id": "markdown",
+    "section_ids": [
+      "s1",
+      "s2",
+      "s3"
+    ]
+  },
+  "fallback": {
+    "on": [
+      "renderer_unavailable",
+      "render_failed"
+    ],
+    "renderer_id": "markdown",
+    "meets_explicit_format": true
+  },
+  "validation_requirements": [
+    "result_revision_matches",
+    "all_source_references_resolve",
+    "required_evidence_and_limits_present",
+    "diagram_nodes_and_edges_match",
+    "goal_coverage_complete",
+    "views_share_result_revision",
+    "learning_aids_labeled_or_reasoned",
+    "semantic_continuation_usable",
+    "change_status_correct",
+    "session_signals_grounded",
+    "baseline_saved_and_restorable"
+  ],
+  "goal_coverage": [
+    {
+      "goal_id": "g1",
+      "section_ids": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "check_method": "定位 e1 和 u1；实际理解需用户反馈"
+    }
+  ],
+  "views": {
+    "explain": {
+      "id": "v1",
+      "section_ids": [
+        "s1",
+        "s2"
+      ],
+      "result_ref": {
+        "result_id": "result-001",
+        "revision": "1"
+      }
+    },
+    "verify": {
+      "id": "v2",
+      "section_ids": [
+        "s3"
+      ],
+      "result_ref": {
+        "result_id": "result-001",
+        "revision": "1"
+      }
+    }
+  },
+  "learning_aids": [],
+  "learning_aids_reason": "本例只有单一信息传递关系，未发现需要对照的混淆概念；具体教学案例另行验收。",
+  "change_set": {
+    "status": "first_version",
+    "baseline_ref": null,
+    "changes": [],
+    "unchanged_block_ids": []
+  },
+  "adaptation": {
+    "applied_signal_ids": [],
+    "focus_block_ids": [
+      "b1"
+    ],
+    "deemphasized_block_ids": [],
+    "reason": "没有用户知识背景信号，采用通用解释深度。",
+    "check_offer": "not_applicable"
+  }
+}

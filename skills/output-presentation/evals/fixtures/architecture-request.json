@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "request_id": "req-001",
+  "mode": "render",
+  "intent": {
+    "goal": "理解上下文管理与工具执行的关系",
+    "audience": "研发人员",
+    "language": "zh-CN"
+  },
+  "result": {
+    "result_id": "result-001",
+    "revision": "1",
+    "summary": "上下文管理为任务执行提供相关信息。",
+    "blocks": [
+      {
+        "id": "b1",
+        "kind": "relations",
+        "data": {
+          "nodes": [
+            {
+              "id": "context",
+              "label": "上下文管理"
+            },
+            {
+              "id": "execution",
+              "label": "工具执行"
+            }
+          ],
+          "edges": [
+            {
+              "id": "e1",
+              "from": "context",
+              "to": "execution",
+              "label": "提供任务上下文"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "src1"
+        ],
+        "uncertainty_ids": [
+          "u1"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "src1",
+        "locator": "fixture:architecture-note",
+        "title": "示例架构说明"
+      }
+    ],
+    "uncertainties": [
+      {
+        "id": "u1",
+        "text": "图示简化了执行后更新上下文的过程。",
+        "affected_block_ids": [
+          "b1"
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+    "surface": "chat",
+    "renderers": [
+      "markdown",
+      "html"
+    ],
+    "agent_callbacks": false
+  },
+  "constraints": {},
+  "comprehension_goals": [
+    {
+      "id": "g1",
+      "description": "指出信息传递方向并理解图示边界",
+      "success_criteria": "能定位 context 到 execution 的边，并指出 u1 对过程的简化。",
+      "origin": "inferred"
+    }
+  ],
+  "learner_context": {
+    "known_concepts": [],
+    "confusions": [],
+    "preferred_depth": null,
+    "feedback": [],
+    "check_consent": "not_asked"
+  },
+  "baseline": null,
+  "history_status": "first",
+  "session_refs": []
+}

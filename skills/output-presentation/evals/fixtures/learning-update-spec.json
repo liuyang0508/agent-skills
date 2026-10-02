@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0",
+  "spec_id": "forward-spec-v2-retest",
+  "request_id": "forward-request-v2",
+  "result_ref": {
+    "result_id": "result-001",
+    "revision": "2"
+  },
+  "decision": "selected",
+  "rationale": "以短解释和反例处理明确困惑；稳定编号核验保留原始 fixture，续接均为可复制任务。",
+  "interactions": [
+    {
+      "id": "a-compare",
+      "operation": "compare",
+      "target_block_ids": [
+        "b1"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "把 b1 的“提供任务上下文”与“发出工具调用”“成功完成读取”的证据要求按发生时点、可观察证据、能否证明结果三个维度比较；后两项作为教学概念，未提供的真实执行信息标记未知。"
+    },
+    {
+      "id": "a-inspect_evidence",
+      "operation": "inspect_evidence",
+      "target_block_ids": [
+        "b1"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "先查 b1 的原始边、src1 的定位及 u1 等限制。来源为教学 fixture，不能外推业务事实；没有执行日志或输出时明确报告不能验证真实执行成功。"
+    },
+    {
+      "id": "a-change_assumption",
+      "operation": "change_assumption",
+      "target_block_ids": [
+        "b1"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {
+        "assumption": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "prompt_text": "仅在独立 scenario 中分析参数 assumption 的变化如何影响能否由输入推断执行结果；保留真实 fixture 与版本，若需新日志或重算交回上游。",
+      "required_parameters": [
+        "assumption"
+      ],
+      "default_parameters": {
+        "assumption": "工具执行失败，但提供给工具的上下文仍然存在"
+      }
+    },
+    {
+      "id": "a-challenge",
+      "operation": "challenge",
+      "target_block_ids": [
+        "b1"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "检查从“上下文提供给工具执行”跳到“工具已经执行成功”的推理弱点；区分缺少结果证据与已证明失败，不把未知当失败。"
+    }
+  ],
+  "presentation": {
+    "primary": "text",
+    "secondary": [
+      "diagram",
+      "verification"
+    ],
+    "format": "markdown",
+    "detail_level": "medium"
+  },
+  "sections": [
+    {
+      "id": "s-summary",
+      "kind": "summary",
+      "source_block_ids": [],
+      "source_field": "result.summary",
+      "visibility": "visible"
+    },
+    {
+      "id": "s-explain",
+      "kind": "diagram",
+      "source_block_ids": [
+        "b1"
+      ],
+      "learning_aid_ids": [
+        "aid-boundary"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s-verify",
+      "kind": "evidence_and_limits",
+      "source_block_ids": [
+        "b1"
+      ],
+      "visibility": "details"
+    }
+  ],
+  "preservation": {
+    "required_evidence_ids": [
+      "src1"
+    ],
+    "required_uncertainty_ids": [
+      "u1",
+      "u2"
+    ],
+    "omitted_block_ids": []
+  },
+  "render_request": {
+    "renderer_id": "markdown",
+    "section_ids": [
+      "s-summary",
+      "s-explain",
+      "s-verify"
+    ]
+  },
+  "fallback": {
+    "on": [],
+    "renderer_id": "markdown",
+    "meets_explicit_format": true
+  },
+  "goal_coverage": [
+    {
+      "goal_id": "g1",
+      "section_ids": [
+        "s-explain",
+        "s-verify"
+      ],
+      "check_method": "可选理解检查中说出同一输入却尚未执行的反例；尚无用户回答，不能声称已理解。"
+    },
+    {
+      "goal_id": "g2",
+      "section_ids": [
+        "s-verify"
+      ],
+      "check_method": "用户可定位原值、来源与限制，并选择对应续接；仅内容覆盖已验证。"
+    }
+  ],
+  "views": {
+    "explain": {
+      "id": "view-explain",
+      "section_ids": [
+        "s-explain"
+      ],
+      "result_ref": {
+        "result_id": "result-001",
+        "revision": "2"
+      }
+    },
+    "verify": {
+      "id": "view-verify",
+      "section_ids": [
+        "s-summary",
+        "s-verify"
+      ],
+      "result_ref": {
+        "result_id": "result-001",
+        "revision": "2"
+      }
+    }
+  },
+  "learning_aids": [
+    {
+      "id": "aid-boundary",
+      "kind": "counterexample",
+      "target_block_ids": [
+        "b1"
+      ],
+      "content": "沿用同一输入：在 A 中尚未调用，在 B 中调用后可能成功返回首行，也可能因文件不存在而失败。输入内容无法区别这些结果；需要查看调用后的响应，并按任务核对首行内容。该例只重讲输入为何不能证明结果。",
+      "origin": "generated",
+      "label": "教学示例",
+      "assumptions": [
+        "设定读取首行任务，仅为假设",
+        "上下文相同不表示调用状态相同",
+        "没有真实文件或工具执行记录"
+      ],
+      "evidence_ids": []
+    }
+  ],
+  "learning_aids_reason": "用户明确请求具体边界例子；同一输入对应不同调用状态的反例直指困惑。",
+  "change_set": {
+    "status": "changed",
+    "baseline_ref": {
+      "result_id": "result-001",
+      "revision": "1"
+    },
+    "changes": [
+      {
+        "change_id": "c1",
+        "kind": "modified",
+        "subject_ids": [
+          "b1"
+        ],
+        "before_block_ids": [
+          "b1"
+        ],
+        "after_block_ids": [
+          "b1"
+        ],
+        "description": "内容或引用映射改变 b1",
+        "reason": "原因未提供",
+        "affected_goal_ids": [
+          "g1",
+          "g2"
+        ]
+      },
+      {
+        "change_id": "c2",
+        "kind": "evidence_changed",
+        "subject_ids": [
+          "src1"
+        ],
+        "before_block_ids": [
+          "b1"
+        ],
+        "after_block_ids": [
+          "b1"
+        ],
+        "description": "依据新增、修改或撤回 src1",
+        "reason": "原因未提供",
+        "affected_goal_ids": [
+          "g1",
+          "g2"
+        ]
+      },
+      {
+        "change_id": "c3",
+        "kind": "uncertainty_changed",
+        "subject_ids": [
+          "u2"
+        ],
+        "before_block_ids": [],
+        "after_block_ids": [
+          "b1"
+        ],
+        "description": "限制新增、修改或撤回 u2",
+        "reason": "原因未提供",
+        "affected_goal_ids": [
+          "g1",
+          "g2"
+        ]
+      }
+    ],
+    "unchanged_block_ids": []
+  },
+  "adaptation": {
+    "applied_signal_ids": [
+      "k1",
+      "f1",
+      "f2"
+    ],
+    "focus_block_ids": [
+      "b1"
+    ],
+    "deemphasized_block_ids": [],
+    "reason": "根据当前会话已知输入概念，解释只聚焦输入与执行证据的区别；第二版针对反馈缩小重讲范围。",
+    "check_offer": "accepted",
+    "explanation_overrides": {
+      "b1": "只重讲你仍困惑的点：同一份输入可以出现在“尚未调用工具”和“已调用工具”的情况中。因此看到输入，不能排除尚未执行的情况，也就不能证明执行结果。即使确认发出了调用，也不能由输入断定成功；第二版明确新增了独立验证成功的限制。你要找的是调用之后的结果证据，并针对任务核对实际输出，而不是把调用前的上下文当作结果证据。这里没有真实执行记录，所以真实是否执行、是否成功仍未知。"
+    },
+    "questions": [
+      {
+        "goal_id": "g1",
+        "question": "可跳过：若只看到了“读取文件首行”的上下文，能否断定已成功读取？请给一个同输入却未执行的情况，并说还需什么证据。",
+        "answer_criteria": "不能断定；可举未调用的情况；需要调用后结果并核对实际输出。"
+      }
+    ]
+  },
+  "validation_requirements": [
+    "原始关系与来源限制无损",
+    "教学示例明确且不作事实证据",
+    "四类续接可复制且不伪装自动执行",
+    "版本差异完整",
+    "反馈只影响解释视图"
+  ]
+}

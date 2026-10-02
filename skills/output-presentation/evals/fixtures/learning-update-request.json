@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "request_id": "forward-request-v2",
+  "mode": "render",
+  "intent": {
+    "goal": "区分上下文输入与工具执行，并核验边界",
+    "audience": "研发人员",
+    "language": "zh-CN",
+    "teaching": true,
+    "learning_aids_required": true,
+    "explicit_format": "markdown"
+  },
+  "result": {
+    "result_id": "result-001",
+    "revision": "2",
+    "summary": "上下文管理为任务执行提供相关信息。",
+    "blocks": [
+      {
+        "id": "b1",
+        "kind": "relations",
+        "data": {
+          "nodes": [
+            {
+              "id": "context",
+              "label": "上下文管理"
+            },
+            {
+              "id": "execution",
+              "label": "工具执行"
+            }
+          ],
+          "edges": [
+            {
+              "id": "e1",
+              "from": "context",
+              "to": "execution",
+              "label": "提供任务上下文"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "src1"
+        ],
+        "uncertainty_ids": [
+          "u1",
+          "u2"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "src1",
+        "locator": "fixture:architecture-note",
+        "title": "修订的示例说明"
+      }
+    ],
+    "uncertainties": [
+      {
+        "id": "u1",
+        "text": "图示简化了执行后更新上下文的过程。",
+        "affected_block_ids": [
+          "b1"
+        ]
+      },
+      {
+        "id": "u2",
+        "text": "工具执行是否成功仍需独立验证",
+        "affected_block_ids": [
+          "b1"
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+    "surface": "chat",
+    "renderers": [
+      "markdown",
+      "html"
+    ],
+    "agent_callbacks": false
+  },
+  "constraints": {
+    "offline": true
+  },
+  "comprehension_goals": [
+    {
+      "id": "g1",
+      "description": "区分提供上下文与工具已经执行，指出输入不能证明执行结果",
+      "success_criteria": "能用具体反例说明同一输入可能对应未执行，并指出还需执行结果证据",
+      "origin": "user"
+    },
+    {
+      "id": "g2",
+      "description": "定位原始关系、来源与限制，并选择可继续的核验操作",
+      "success_criteria": "能找到 b1/src1/u1，并选择比较、核验、改变假设或挑战任务",
+      "origin": "user"
+    }
+  ],
+  "learner_context": {
+    "known_concepts": [
+      {
+        "id": "k1",
+        "text": "我懂上下文是输入",
+        "source_ref": "user-message-1",
+        "block_ids": [
+          "b1"
+        ]
+      }
+    ],
+    "confusions": [
+      {
+        "id": "f1",
+        "text": "容易把提供上下文理解为工具已经执行",
+        "source_ref": "user-message-1",
+        "block_ids": [
+          "b1"
+        ]
+      }
+    ],
+    "preferred_depth": null,
+    "feedback": [
+      {
+        "id": "f2",
+        "text": "仍没理解为什么输入不能证明执行结果，请只重讲这个困惑点",
+        "source_ref": "user-message-2",
+        "block_ids": [
+          "b1"
+        ]
+      }
+    ],
+    "check_consent": "accepted"
+  },
+  "baseline": {
+    "result": {
+      "result_id": "result-001",
+      "revision": "1",
+      "summary": "上下文管理为任务执行提供相关信息。",
+      "blocks": [
+        {
+          "id": "b1",
+          "kind": "relations",
+          "data": {
+            "nodes": [
+              {
+                "id": "context",
+                "label": "上下文管理"
+              },
+              {
+                "id": "execution",
+                "label": "工具执行"
+              }
+            ],
+            "edges": [
+              {
+                "id": "e1",
+                "from": "context",
+                "to": "execution",
+                "label": "提供任务上下文"
+              }
+            ]
+          },
+          "evidence_ids": [
+            "src1"
+          ],
+          "uncertainty_ids": [
+            "u1"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "src1",
+          "locator": "fixture:architecture-note",
+          "title": "示例架构说明"
+        }
+      ],
+      "uncertainties": [
+        {
+          "id": "u1",
+          "text": "图示简化了执行后更新上下文的过程。",
+          "affected_block_ids": [
+            "b1"
+          ]
+        }
+      ]
+    },
+    "spec_ref": "forward-spec-v1",
+    "artifact_refs": [
+      {
+        "ref": "presentation.md",
+        "format": "markdown"
+      }
+    ]
+  },
+  "history_status": "available",
+  "session_refs": [
+    "user-message-1",
+    "user-message-2"
+  ]
+}
