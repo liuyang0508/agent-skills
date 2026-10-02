@@ -1,0 +1,177 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-pmvtQNi8mSifXTognaNrqrM4S3fRpaGzvxMyuQkd0A0='; img-src data:"><title>RAG 如何把资料带进回答</title><style>:root{--ink:#18304d;--blue:#1768ed;--muted:#7188a3;--line:#dae6f4}*{box-sizing:border-box}body{margin:0;background:#f8fafc;color:var(--ink);font-family:'Avenir Next','PingFang SC',sans-serif;line-height:1.8}header{max-width:1120px;margin:auto;padding:24px 30px;display:flex;justify-content:space-between;font:10px Menlo,monospace;color:var(--muted);letter-spacing:1px}main{max-width:1120px;margin:auto;padding:30px}h1{font-size:clamp(30px,4vw,49px);font-weight:550;letter-spacing:-1.5px;line-height:1.3;margin:20px 0}h2{font-size:24px;font-weight:500}.summary{font-size:17px;color:var(--muted);max-width:800px}.toolbar{display:flex;justify-content:space-between;gap:20px;align-items:center;border-bottom:1px solid var(--line);padding:22px 0;margin:22px 0}button,input,textarea{font:inherit}button{border:1px solid #d1e0f4;background:white;color:#4c6e98;border-radius:8px;padding:9px 16px;cursor:pointer}button[aria-selected=true],button.active{background:var(--blue);color:white;border-color:var(--blue)}input{border:1px solid #d2dff0;border-radius:7px;padding:9px 12px;background:white;font-size:12px}label{font-size:12px;color:var(--muted)}.graph{background:white;border:1px solid var(--line);border-radius:17px;overflow:auto;padding:20px}.graph svg{width:100%;height:auto;display:block;min-width:480px}.diagram-node.selected rect{fill:#dceaff;stroke:#1768ed;stroke-width:3}#node-detail{border-left:3px solid var(--blue);padding:15px 20px;margin:24px 0;background:#edf4ff;border-radius:0 10px 10px 0;color:#4f729b;font-size:13px}.content-card,.learning{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;margin:15px 0}.content-card p{margin:0}.learning{background:#eef5ff}.learning span{font-size:11px;color:var(--blue)}.learning small{color:var(--muted)}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}th{color:#46719d}.table-wrap{overflow:auto}dl{display:grid;grid-template-columns:110px 1fr;gap:12px;font-size:13px}dt{color:var(--blue)}dd{margin:0;color:var(--muted)}.next{margin-top:45px;padding-top:25px;border-top:1px solid var(--line)}.actions{display:flex;gap:9px;flex-wrap:wrap}textarea{width:100%;margin:18px 0;border:1px solid var(--line);border-radius:10px;padding:16px;background:white;font:11px/1.6 Menlo,monospace;color:#55708d}pre{overflow:auto;background:white;padding:20px;border-radius:10px;font-size:11px}.comparison-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.comparison-grid article{border:1px solid var(--line);border-radius:9px;padding:17px;background:white}#status{color:var(--blue);font-size:12px}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #87b8ff;outline-offset:3px}[hidden]{display:none!important}@media(max-width:650px){header,main{padding:20px}.toolbar{align-items:start;flex-direction:column;gap:15px}.summary{font-size:15px}.graph{padding:5px}.comparison-grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:no-preference){.diagram-node{transition:opacity .2s}.diagram-node.selected{animation:focus-in .3s ease-out}@keyframes focus-in{from{opacity:.5}to{opacity:1}}}
+</style></head><body><header><span>OUTPUT PRESENTATION</span><span>理解 · 核验 · 继续</span></header><main><h1>RAG 如何把资料带进回答</h1><p class="summary">RAG 先检索相关资料，再结合资料生成回答。检索结果仍需要核验。</p><div class="toolbar"><div role="tablist" aria-label="阅读视图"><button id="explain-tab" role="tab" aria-selected="true" aria-controls="explain">理解</button><button id="verify-tab" role="tab" aria-selected="false" aria-controls="verify">核验依据</button></div><label>搜索内容 <input id="search" type="search" placeholder="搜索节点、数据或说明"></label></div><section id="explain" role="tabpanel"><div class="graph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 577" width="1200" role="group" aria-labelledby="title"><title id="title">RAG 如何把资料带进回答</title><desc>RAG 先检索相关资料，再结合资料生成回答。检索结果仍需要核验。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#6999dd"/></marker></defs><style>text{font-family:system-ui,sans-serif}.diagram-node{cursor:pointer}.diagram-node:hover rect,.diagram-node:focus rect{stroke:#1768ed;stroke-width:3}</style><rect width="1200" height="577" fill="white"/><text x="60" y="54" font-size="25" fill="#182d49">RAG 如何把资料带进回答</text><g transform="translate(0,100)" data-block="flow"><g class="diagram-edge" data-edge-id="e1"><path d="M 270 103.0 C 310 103.0, 300 103.0, 340 103.0" stroke="#6999dd" stroke-width="2" fill="none" marker-end="url(#arrow)"/><text x="305.0" y="91.0" text-anchor="middle" font-size="12" fill="#5d7595">发起检索</text><title>发起检索</title></g><g class="diagram-edge" data-edge-id="e2"><path d="M 560 103.0 C 600 103.0, 590 103.0, 630 103.0" stroke="#6999dd" stroke-width="2" fill="none" marker-end="url(#arrow)"/><text x="595.0" y="91.0" text-anchor="middle" font-size="12" fill="#5d7595">取得片段</text><title>取得片段</title></g><g class="diagram-edge" data-edge-id="e3"><path d="M 850 103.0 C 890 103.0, 880 103.0, 920 103.0" stroke="#6999dd" stroke-width="2" fill="none" marker-end="url(#arrow)"/><text x="885.0" y="91.0" text-anchor="middle" font-size="12" fill="#5d7595">提供上下文</text><title>提供上下文</title></g><g class="diagram-edge" data-edge-id="e4"><path d="M 1030.0 146 C 1030.0 191, 160.0 181, 160.0 226" stroke="#6999dd" stroke-width="2" fill="none" marker-end="url(#arrow)"/><text x="595.0" y="174.0" text-anchor="middle" font-size="12" fill="#5d7595">生成回答</text><title>生成回答</title></g><g class="diagram-edge" data-edge-id="e5"><path d="M 160.0 60 C 160.0 12, 1030.0 12, 1030.0 60" stroke="#6999dd" stroke-width="2" fill="none" marker-end="url(#arrow)"/><text x="595.0" y="20" text-anchor="middle" font-size="12" fill="#5d7595">提供问题</text><title>提供问题</title></g><g class="diagram-node" role="button" tabindex="0" aria-label="用户问题" data-block-id="flow" data-node-id="question"><title>用户问题</title><rect x="50" y="60" width="220" height="86" rx="14" fill="#f1f6ff" stroke="#9fc4ff"/><text text-anchor="middle" font-size="17" fill="#183b70"><tspan x="160.0" y="91">用户问题</tspan></text></g><g class="diagram-node" role="button" tabindex="0" aria-label="检索器" data-block-id="flow" data-node-id="retriever"><title>检索器</title><rect x="340" y="60" width="220" height="86" rx="14" fill="#f1f6ff" stroke="#9fc4ff"/><text text-anchor="middle" font-size="17" fill="#183b70"><tspan x="450.0" y="91">检索器</tspan></text></g><g class="diagram-node" role="button" tabindex="0" aria-label="相关资料" data-block-id="flow" data-node-id="passages"><title>相关资料</title><rect x="630" y="60" width="220" height="86" rx="14" fill="#f1f6ff" stroke="#9fc4ff"/><text text-anchor="middle" font-size="17" fill="#183b70"><tspan x="740.0" y="91">相关资料</tspan></text></g><g class="diagram-node" role="button" tabindex="0" aria-label="生成模型" data-block-id="flow" data-node-id="generator"><title>生成模型</title><rect x="920" y="60" width="220" height="86" rx="14" fill="#f1f6ff" stroke="#9fc4ff"/><text text-anchor="middle" font-size="17" fill="#183b70"><tspan x="1030.0" y="91">生成模型</tspan></text></g><g class="diagram-node" role="button" tabindex="0" aria-label="待核验回答" data-block-id="flow" data-node-id="answer"><title>待核验回答</title><rect x="50" y="226" width="220" height="86" rx="14" fill="#f1f6ff" stroke="#9fc4ff"/><text text-anchor="middle" font-size="17" fill="#183b70"><tspan x="160.0" y="257">待核验回答</tspan></text></g></g><text x="60" y="547" font-size="12" fill="#8b9cb0">图形与标签来自本次结果；完整原始值、来源和限制见随附说明页。</text></svg></div><aside id="node-detail" aria-live="polite">点击图中的节点，可以查看与它有关的输入、输出关系及来源。</aside><div id="cards"><section class="goals"><h2>理解要点</h2><ul><li>说明检索和生成如何连接</li><li>知道为何还需核验</li></ul></section><article class="content-card" data-block="overview"><p>RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。</p></article><article class="content-card" data-block="flow"><span class="focus-label">重点</span><p>点击图中的节点，查看相关关系与依据。</p></article><article class="content-card" data-block="steps"><p>沿图中的顺序查看过程。</p><ol><li>先形成检索请求。</li><li>从资料源取得相关片段。</li><li>把片段与问题交给生成模型。</li><li>对照依据核验回答。</li></ol></article></div><div><article class="learning"><span>假设示例</span><p>假设检索器取到了过期说明。模型即使使用这段资料，也可能给出不适用于当前情况的回答。</p><small>假设：仅用于说明检索资料的适用性问题；不代表任何实际产品或实测结果</small></article></div><dl><dt>检索器</dt><dd>寻找与问题相关资料的组件。</dd><dt>生成模型</dt><dd>根据输入生成回答的模型。</dd></dl><section><h2>可选理解检查</h2><p>如愿意，可以在当前会话选择简短理解检查；也可以跳过。</p></section></section><section id="verify" role="tabpanel" hidden><h2>原始结果与依据</h2><ul><li><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener noreferrer">RAG 原始论文：检索增强生成</a></li></ul><h3>适用限制</h3><ul><li>这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。</li></ul><details><summary>查看原始结果</summary><pre>{
+  &quot;result_id&quot;: &quot;rag-process&quot;,
+  &quot;revision&quot;: &quot;1&quot;,
+  &quot;summary&quot;: &quot;RAG 先检索相关资料，再结合资料生成回答。检索结果仍需要核验。&quot;,
+  &quot;blocks&quot;: [
+    {
+      &quot;id&quot;: &quot;overview&quot;,
+      &quot;kind&quot;: &quot;text&quot;,
+      &quot;data&quot;: {
+        &quot;content&quot;: &quot;RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。&quot;
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;rag-paper&quot;
+      ],
+      &quot;uncertainty_ids&quot;: [
+        &quot;limit&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;flow&quot;,
+      &quot;kind&quot;: &quot;relations&quot;,
+      &quot;data&quot;: {
+        &quot;nodes&quot;: [
+          {
+            &quot;id&quot;: &quot;question&quot;,
+            &quot;label&quot;: &quot;用户问题&quot;,
+            &quot;definition&quot;: &quot;问题提供本次需要回答的内容。&quot;
+          },
+          {
+            &quot;id&quot;: &quot;retriever&quot;,
+            &quot;label&quot;: &quot;检索器&quot;,
+            &quot;definition&quot;: &quot;检索器寻找与问题相关的资料片段。&quot;
+          },
+          {
+            &quot;id&quot;: &quot;passages&quot;,
+            &quot;label&quot;: &quot;相关资料&quot;,
+            &quot;definition&quot;: &quot;资料片段为生成模型提供额外的信息。&quot;
+          },
+          {
+            &quot;id&quot;: &quot;generator&quot;,
+            &quot;label&quot;: &quot;生成模型&quot;,
+            &quot;definition&quot;: &quot;模型使用问题与检索到的资料生成回答。&quot;
+          },
+          {
+            &quot;id&quot;: &quot;answer&quot;,
+            &quot;label&quot;: &quot;待核验回答&quot;,
+            &quot;definition&quot;: &quot;回答仍需对照资料与适用限制核验。&quot;
+          }
+        ],
+        &quot;edges&quot;: [
+          {
+            &quot;id&quot;: &quot;e1&quot;,
+            &quot;from&quot;: &quot;question&quot;,
+            &quot;to&quot;: &quot;retriever&quot;,
+            &quot;label&quot;: &quot;发起检索&quot;
+          },
+          {
+            &quot;id&quot;: &quot;e2&quot;,
+            &quot;from&quot;: &quot;retriever&quot;,
+            &quot;to&quot;: &quot;passages&quot;,
+            &quot;label&quot;: &quot;取得片段&quot;
+          },
+          {
+            &quot;id&quot;: &quot;e3&quot;,
+            &quot;from&quot;: &quot;passages&quot;,
+            &quot;to&quot;: &quot;generator&quot;,
+            &quot;label&quot;: &quot;提供上下文&quot;
+          },
+          {
+            &quot;id&quot;: &quot;e4&quot;,
+            &quot;from&quot;: &quot;generator&quot;,
+            &quot;to&quot;: &quot;answer&quot;,
+            &quot;label&quot;: &quot;生成回答&quot;
+          },
+          {
+            &quot;id&quot;: &quot;e5&quot;,
+            &quot;from&quot;: &quot;question&quot;,
+            &quot;to&quot;: &quot;generator&quot;,
+            &quot;label&quot;: &quot;提供问题&quot;
+          }
+        ]
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;rag-paper&quot;
+      ],
+      &quot;uncertainty_ids&quot;: [
+        &quot;limit&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;steps&quot;,
+      &quot;kind&quot;: &quot;steps&quot;,
+      &quot;data&quot;: {
+        &quot;items&quot;: [
+          &quot;先形成检索请求。&quot;,
+          &quot;从资料源取得相关片段。&quot;,
+          &quot;把片段与问题交给生成模型。&quot;,
+          &quot;对照依据核验回答。&quot;
+        ]
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;rag-paper&quot;
+      ],
+      &quot;uncertainty_ids&quot;: [
+        &quot;limit&quot;
+      ]
+    }
+  ],
+  &quot;evidence&quot;: [
+    {
+      &quot;id&quot;: &quot;rag-paper&quot;,
+      &quot;title&quot;: &quot;RAG 原始论文：检索增强生成&quot;,
+      &quot;locator&quot;: &quot;https://arxiv.org/abs/2005.11401&quot;
+    }
+  ],
+  &quot;uncertainties&quot;: [
+    {
+      &quot;id&quot;: &quot;limit&quot;,
+      &quot;text&quot;: &quot;这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。&quot;,
+      &quot;affected_block_ids&quot;: [
+        &quot;overview&quot;,
+        &quot;flow&quot;,
+        &quot;steps&quot;
+      ]
+    }
+  ]
+}</pre></details></section><section class="next"><h2>继续思考</h2><div class="actions"><button class="task-button" data-action="inspect">核验依据</button><button class="task-button" data-action="compare">比较内容</button><button class="task-button" data-action="assume">改变假设</button><button class="task-button" data-action="challenge">检查薄弱点</button></div><div id="comparison" hidden></div><label id="assumption-label" hidden>新的假设 <input id="assumption" type="text"></label><details id="task-details"><summary>查看完整后续任务</summary><textarea id="task" aria-label="可复制的完整后续任务" rows="7" readonly></textarea></details><button id="copy-task">复制后续任务</button><p id="status" role="status"></p></section></main><script id="presentation-data" type="application/json">{"result": {"result_id": "rag-process", "revision": "1", "summary": "RAG 先检索相关资料，再结合资料生成回答。检索结果仍需要核验。", "blocks": [{"id": "overview", "kind": "text", "data": {"content": "RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。"}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}, {"id": "flow", "kind": "relations", "data": {"nodes": [{"id": "question", "label": "用户问题", "definition": "问题提供本次需要回答的内容。"}, {"id": "retriever", "label": "检索器", "definition": "检索器寻找与问题相关的资料片段。"}, {"id": "passages", "label": "相关资料", "definition": "资料片段为生成模型提供额外的信息。"}, {"id": "generator", "label": "生成模型", "definition": "模型使用问题与检索到的资料生成回答。"}, {"id": "answer", "label": "待核验回答", "definition": "回答仍需对照资料与适用限制核验。"}], "edges": [{"id": "e1", "from": "question", "to": "retriever", "label": "发起检索"}, {"id": "e2", "from": "retriever", "to": "passages", "label": "取得片段"}, {"id": "e3", "from": "passages", "to": "generator", "label": "提供上下文"}, {"id": "e4", "from": "generator", "to": "answer", "label": "生成回答"}, {"id": "e5", "from": "question", "to": "generator", "label": "提供问题"}]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}, {"id": "steps", "kind": "steps", "data": {"items": ["先形成检索请求。", "从资料源取得相关片段。", "把片段与问题交给生成模型。", "对照依据核验回答。"]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "evidence": [{"id": "rag-paper", "title": "RAG 原始论文：检索增强生成", "locator": "https://arxiv.org/abs/2005.11401"}], "uncertainties": [{"id": "limit", "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。", "affected_block_ids": ["overview", "flow", "steps"]}]}, "blocks": [{"id": "overview", "kind": "text", "data": {"content": "RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。"}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}, {"id": "flow", "kind": "relations", "data": {"nodes": [{"id": "question", "label": "用户问题", "definition": "问题提供本次需要回答的内容。"}, {"id": "retriever", "label": "检索器", "definition": "检索器寻找与问题相关的资料片段。"}, {"id": "passages", "label": "相关资料", "definition": "资料片段为生成模型提供额外的信息。"}, {"id": "generator", "label": "生成模型", "definition": "模型使用问题与检索到的资料生成回答。"}, {"id": "answer", "label": "待核验回答", "definition": "回答仍需对照资料与适用限制核验。"}], "edges": [{"id": "e1", "from": "question", "to": "retriever", "label": "发起检索"}, {"id": "e2", "from": "retriever", "to": "passages", "label": "取得片段"}, {"id": "e3", "from": "passages", "to": "generator", "label": "提供上下文"}, {"id": "e4", "from": "generator", "to": "answer", "label": "生成回答"}, {"id": "e5", "from": "question", "to": "generator", "label": "提供问题"}]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}, {"id": "steps", "kind": "steps", "data": {"items": ["先形成检索请求。", "从资料源取得相关片段。", "把片段与问题交给生成模型。", "对照依据核验回答。"]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "spec": {"schema_version": "1.0", "spec_id": "rag-mp4", "request_id": "rag-explainer", "result_ref": {"result_id": "rag-process", "revision": "1"}, "decision": "selected", "rationale": "用短句、关系图和可探索视图解释检索与生成，并保留核验限制。", "presentation": {"primary": "video", "secondary": ["text"], "format": "mp4", "detail_level": "medium"}, "sections": [{"id": "s1", "kind": "summary", "source_field": "result.summary", "source_block_ids": [], "visibility": "visible"}, {"id": "s2", "kind": "text", "source_block_ids": ["overview"], "visibility": "visible"}, {"id": "s3", "kind": "diagram", "source_block_ids": ["flow"], "visibility": "visible", "learning_aid_ids": ["a-example"]}, {"id": "s4", "kind": "steps", "source_block_ids": ["steps"], "visibility": "visible"}, {"id": "s5", "kind": "evidence_and_limits", "source_block_ids": ["overview", "flow", "steps"], "visibility": "visible"}], "interactions": [{"id": "inspect", "operation": "inspect_evidence", "target_block_ids": ["flow"], "goal_ids": ["g1", "g2"], "delivery_mode": "prompt", "parameter_constraints": {}, "prompt_text": "核验图中的检索与生成关系，并说明简化边界。"}, {"id": "compare", "operation": "compare", "target_block_ids": ["overview", "steps"], "goal_ids": ["g1"], "delivery_mode": "prompt", "parameter_constraints": {}, "prompt_text": "对照概念说明与过程步骤。"}, {"id": "assume", "operation": "change_assumption", "target_block_ids": ["flow"], "goal_ids": ["g2"], "delivery_mode": "prompt", "parameter_constraints": {"assumption": {"type": "string", "minLength": 1, "maxLength": 120}}, "required_parameters": ["assumption"], "default_parameters": {"assumption": "检索资料已经过期"}, "prompt_text": "在独立场景中分析过期资料，保留真实结果。"}, {"id": "challenge", "operation": "challenge", "target_block_ids": ["flow"], "goal_ids": ["g2"], "delivery_mode": "prompt", "parameter_constraints": {}, "prompt_text": "检查检索资料的相关性、时效性与回答依据。"}], "preservation": {"required_evidence_ids": ["rag-paper"], "required_uncertainty_ids": ["limit"], "omitted_block_ids": []}, "render_request": {"renderer_id": "mp4", "section_ids": ["s1", "s2", "s3", "s4", "s5"]}, "fallback": {"on": ["renderer_unavailable", "render_failed"], "renderer_id": "markdown", "meets_explicit_format": true}, "validation_requirements": ["result_revision_matches", "all_source_references_resolve", "required_evidence_and_limits_present", "diagram_nodes_and_edges_match", "goal_coverage_complete", "views_share_result_revision", "learning_aids_labeled_or_reasoned", "semantic_continuation_usable", "change_status_correct", "session_signals_grounded", "baseline_saved_and_restorable"], "goal_coverage": [{"goal_id": "g1", "section_ids": ["s2", "s3", "s4"], "check_method": "指出检索器、资料和模型的关系方向。"}, {"goal_id": "g2", "section_ids": ["s3", "s5"], "check_method": "说明反例与限制。"}], "views": {"explain": {"id": "explain", "section_ids": ["s1", "s2", "s3", "s4"], "result_ref": {"result_id": "rag-process", "revision": "1"}}, "verify": {"id": "verify", "section_ids": ["s5"], "result_ref": {"result_id": "rag-process", "revision": "1"}}}, "learning_aids": [{"id": "a-example", "kind": "counterexample", "target_block_ids": ["flow"], "content": "假设检索器取到了过期说明。模型即使使用这段资料，也可能给出不适用于当前情况的回答。", "origin": "generated", "label": "假设示例", "assumptions": ["仅用于说明检索资料的适用性问题", "不代表任何实际产品或实测结果"], "evidence_ids": []}], "learning_aids_reason": "用过期资料的假设说明为什么还需核验。", "change_set": {"status": "first_version", "baseline_ref": null, "changes": [], "unchanged_block_ids": []}, "adaptation": {"applied_signal_ids": [], "focus_block_ids": ["flow"], "deemphasized_block_ids": [], "reason": "首次解释，以信息流和核验边界为重点。", "check_offer": "offered"}, "writing": {"profile": "plain", "max_sentence_chars": 70, "glossary": [{"term": "检索器", "definition": "寻找与问题相关资料的组件。"}, {"term": "生成模型", "definition": "根据输入生成回答的模型。"}]}, "video": {"narration_mode": "local", "fps": 24, "scenes": [{"id": "intro", "title": "先理解检索与生成", "source_block_ids": ["overview"], "narration": "RAG 把检索和生成结合起来。先找到与问题相关的资料，再把资料交给模型。"}, {"id": "flow", "title": "资料怎样进入回答", "source_block_ids": ["flow"], "highlight_node_ids": ["retriever", "passages", "generator"], "narration": "看这条信息流。问题进入检索器。检索器取得相关片段。模型再结合问题与资料生成回答。"}, {"id": "check", "title": "有资料，仍然要核验", "source_block_ids": ["steps"], "narration": "最后对照依据核验回答。假设资料已经过期，即使模型使用了资料，回答也可能不适用。这个反例是教学假设。"}]}}, "continuations": [{"id": "inspect", "task": {"operation": "inspect_evidence", "request_id": "rag-explainer", "result_ref": {"result_id": "rag-process", "revision": "1"}, "target_block_ids": ["flow"], "goal_ids": ["g1", "g2"], "parameters": {}, "source_blocks": [{"id": "flow", "kind": "relations", "data": {"nodes": [{"id": "question", "label": "用户问题", "definition": "问题提供本次需要回答的内容。"}, {"id": "retriever", "label": "检索器", "definition": "检索器寻找与问题相关的资料片段。"}, {"id": "passages", "label": "相关资料", "definition": "资料片段为生成模型提供额外的信息。"}, {"id": "generator", "label": "生成模型", "definition": "模型使用问题与检索到的资料生成回答。"}, {"id": "answer", "label": "待核验回答", "definition": "回答仍需对照资料与适用限制核验。"}], "edges": [{"id": "e1", "from": "question", "to": "retriever", "label": "发起检索"}, {"id": "e2", "from": "retriever", "to": "passages", "label": "取得片段"}, {"id": "e3", "from": "passages", "to": "generator", "label": "提供上下文"}, {"id": "e4", "from": "generator", "to": "answer", "label": "生成回答"}, {"id": "e5", "from": "question", "to": "generator", "label": "提供问题"}]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "evidence": [{"id": "rag-paper", "title": "RAG 原始论文：检索增强生成", "locator": "https://arxiv.org/abs/2005.11401"}], "uncertainties": [{"id": "limit", "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。", "affected_block_ids": ["overview", "flow", "steps"]}], "instruction": "核验所列结论、原始依据、单位与限制；无法读取来源时明确缺口。", "planner_prompt": "核验图中的检索与生成关系，并说明简化边界。", "execution": "copy_to_upstream_agent"}}, {"id": "compare", "task": {"operation": "compare", "request_id": "rag-explainer", "result_ref": {"result_id": "rag-process", "revision": "1"}, "target_block_ids": ["overview", "steps"], "goal_ids": ["g1"], "parameters": {}, "source_blocks": [{"id": "overview", "kind": "text", "data": {"content": "RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。"}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}, {"id": "steps", "kind": "steps", "data": {"items": ["先形成检索请求。", "从资料源取得相关片段。", "把片段与问题交给生成模型。", "对照依据核验回答。"]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "evidence": [{"id": "rag-paper", "title": "RAG 原始论文：检索增强生成", "locator": "https://arxiv.org/abs/2005.11401"}], "uncertainties": [{"id": "limit", "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。", "affected_block_ids": ["overview", "flow", "steps"]}], "instruction": "按一致维度比较所列内容；缺失数据标记未知，不能补造。", "planner_prompt": "对照概念说明与过程步骤。", "execution": "copy_to_upstream_agent"}}, {"id": "assume", "task": {"operation": "change_assumption", "request_id": "rag-explainer", "result_ref": {"result_id": "rag-process", "revision": "1"}, "target_block_ids": ["flow"], "goal_ids": ["g2"], "parameters": {"assumption": "检索资料已经过期"}, "source_blocks": [{"id": "flow", "kind": "relations", "data": {"nodes": [{"id": "question", "label": "用户问题", "definition": "问题提供本次需要回答的内容。"}, {"id": "retriever", "label": "检索器", "definition": "检索器寻找与问题相关的资料片段。"}, {"id": "passages", "label": "相关资料", "definition": "资料片段为生成模型提供额外的信息。"}, {"id": "generator", "label": "生成模型", "definition": "模型使用问题与检索到的资料生成回答。"}, {"id": "answer", "label": "待核验回答", "definition": "回答仍需对照资料与适用限制核验。"}], "edges": [{"id": "e1", "from": "question", "to": "retriever", "label": "发起检索"}, {"id": "e2", "from": "retriever", "to": "passages", "label": "取得片段"}, {"id": "e3", "from": "passages", "to": "generator", "label": "提供上下文"}, {"id": "e4", "from": "generator", "to": "answer", "label": "生成回答"}, {"id": "e5", "from": "question", "to": "generator", "label": "提供问题"}]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "evidence": [{"id": "rag-paper", "title": "RAG 原始论文：检索增强生成", "locator": "https://arxiv.org/abs/2005.11401"}], "uncertainties": [{"id": "limit", "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。", "affected_block_ids": ["overview", "flow", "steps"]}], "instruction": "在独立假设场景中分析这些内容；新研究或重算交回上游，保留真实结果。", "planner_prompt": "在独立场景中分析过期资料，保留真实结果。", "execution": "copy_to_upstream_agent", "scenario_id": "scenario-f6f1fa3ddb6e04e4", "preserve_original_result": true}}, {"id": "challenge", "task": {"operation": "challenge", "request_id": "rag-explainer", "result_ref": {"result_id": "rag-process", "revision": "1"}, "target_block_ids": ["flow"], "goal_ids": ["g2"], "parameters": {}, "source_blocks": [{"id": "flow", "kind": "relations", "data": {"nodes": [{"id": "question", "label": "用户问题", "definition": "问题提供本次需要回答的内容。"}, {"id": "retriever", "label": "检索器", "definition": "检索器寻找与问题相关的资料片段。"}, {"id": "passages", "label": "相关资料", "definition": "资料片段为生成模型提供额外的信息。"}, {"id": "generator", "label": "生成模型", "definition": "模型使用问题与检索到的资料生成回答。"}, {"id": "answer", "label": "待核验回答", "definition": "回答仍需对照资料与适用限制核验。"}], "edges": [{"id": "e1", "from": "question", "to": "retriever", "label": "发起检索"}, {"id": "e2", "from": "retriever", "to": "passages", "label": "取得片段"}, {"id": "e3", "from": "passages", "to": "generator", "label": "提供上下文"}, {"id": "e4", "from": "generator", "to": "answer", "label": "生成回答"}, {"id": "e5", "from": "question", "to": "generator", "label": "提供问题"}]}, "evidence_ids": ["rag-paper"], "uncertainty_ids": ["limit"]}], "evidence": [{"id": "rag-paper", "title": "RAG 原始论文：检索增强生成", "locator": "https://arxiv.org/abs/2005.11401"}], "uncertainties": [{"id": "limit", "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。", "affected_block_ids": ["overview", "flow", "steps"]}], "instruction": "检查结论的依据、适用边界和薄弱环节；区分已验证问题与待调查假说。", "planner_prompt": "检查检索资料的相关性、时效性与回答依据。", "execution": "copy_to_upstream_agent"}}]}</script><script>'use strict';
+const data=JSON.parse(document.querySelector('#presentation-data').textContent);
+const result=data.result,blocks=new Map(data.blocks.map(b=>[b.id,b]));
+const task=document.querySelector('#task'),status=document.querySelector('#status');
+let activeTask=null;
+function setView(view){['explain','verify'].forEach(name=>{document.querySelector('#'+name).hidden=name!==view;document.querySelector('#'+name+'-tab').setAttribute('aria-selected',String(name===view));});}
+['explain','verify'].forEach(name=>document.querySelector('#'+name+'-tab').addEventListener('click',()=>setView(name)));
+document.querySelectorAll('[role=tab]').forEach(tab=>tab.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){const next=tab.id==='explain-tab'?'verify':'explain';setView(next);document.querySelector('#'+next+'-tab').focus();}}));
+function inspectNode(element){
+  document.querySelectorAll('.diagram-node').forEach(node=>node.classList.toggle('selected',node===element));
+  const block=blocks.get(element.dataset.blockId);if(!block)return;
+  const detail=document.querySelector('#node-detail');detail.replaceChildren();
+  const node=(block.data.nodes||[]).find(n=>n.id===element.dataset.nodeId);
+  const heading=document.createElement('strong');heading.textContent=node?node.label:element.getAttribute('aria-label');detail.append(heading);
+  if(node&&typeof node.definition==='string'){const paragraph=document.createElement('p');paragraph.textContent=node.definition;detail.append(paragraph);}
+  (block.data.edges||[]).filter(e=>e.from===element.dataset.nodeId||e.to===element.dataset.nodeId).forEach(edge=>{const names=new Map((block.data.nodes||[]).map(n=>[n.id,n.label]));const p=document.createElement('p');p.textContent=names.get(edge.from)+' → '+names.get(edge.to)+'：'+edge.label;detail.append(p);});
+  const refs=document.createElement('p');refs.textContent='来源：'+(result.evidence.filter(e=>block.evidence_ids.includes(e.id)).map(e=>e.title).join('；')||'未提供');detail.append(refs);
+  result.uncertainties.filter(u=>block.uncertainty_ids.includes(u.id)||u.affected_block_ids.length===0).forEach(u=>{const p=document.createElement('p');p.textContent='限制：'+u.text;detail.append(p);});
+}
+document.querySelectorAll('.diagram-node').forEach(node=>{node.addEventListener('click',()=>inspectNode(node));node.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();inspectNode(node);}});});
+document.querySelector('#search').addEventListener('input',event=>{const term=event.target.value.trim().toLocaleLowerCase();document.querySelectorAll('.content-card,.data-row').forEach(element=>element.hidden=Boolean(term)&&!element.textContent.toLocaleLowerCase().includes(term));document.querySelectorAll('.diagram-node').forEach(node=>node.style.opacity=!term||node.getAttribute('aria-label').toLocaleLowerCase().includes(term)?'1':'.2');status.textContent=term?'已筛选匹配内容；核验视图保留完整原始数据。':'';});
+function previewTask(){task.value=activeTask?JSON.stringify(activeTask,null,2):'';}
+document.querySelectorAll('.task-button').forEach(button=>button.addEventListener('click',()=>{
+  const declaration=data.spec.interactions.find(a=>a.id===button.dataset.action);
+  const continuation=data.continuations.find(c=>c.id===button.dataset.action);
+  if(!declaration||!continuation)return;
+  activeTask=JSON.parse(JSON.stringify(continuation.task));document.querySelectorAll('.task-button').forEach(b=>b.classList.toggle('active',b===button));
+  const label=document.querySelector('#assumption-label');label.hidden=declaration.operation!=='change_assumption'||!('assumption' in declaration.parameter_constraints);
+  document.querySelector('#assumption').value=activeTask.parameters.assumption||'';
+  const comparison=document.querySelector('#comparison');comparison.hidden=declaration.operation!=='compare';comparison.replaceChildren();
+  if(declaration.operation==='compare'){
+    comparison.className='comparison-grid';declaration.target_block_ids.forEach(id=>{const block=blocks.get(id);if(!block)return;const article=document.createElement('article');const heading=document.createElement('strong');heading.textContent=block.kind==='text'?block.data.content.slice(0,45):{'relations':'关系与依赖','steps':'执行步骤','series':'数据系列','comparison':'比较记录'}[block.kind];const content=document.createElement('pre');content.textContent=JSON.stringify(block.data,null,2);article.append(heading,content);comparison.append(article);});
+  }
+  if(declaration.operation==='inspect_evidence'){setView('verify');document.querySelector('#verify').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
+  status.textContent=declaration.delivery_mode==='local'?'已在当前结果上展示所选内容。':'已准备完整后续任务；复制后交给上游 Agent。';previewTask();
+}));
+document.querySelector('#assumption').addEventListener('input',event=>{
+  if(!activeTask||activeTask.operation!=='change_assumption')return;
+  const declaration=data.spec.interactions.find(a=>a.operation==='change_assumption'&&a.target_block_ids.join()===activeTask.target_block_ids.join());
+  const rule=declaration&&declaration.parameter_constraints.assumption;
+  const value=event.target.value;
+  if(!rule||!value.trim()||(Array.isArray(rule)&&!rule.includes(value))||(rule.type&&rule.type!=='string')||(rule.minLength&&value.length<rule.minLength)||(rule.maxLength&&value.length>rule.maxLength)){status.textContent='请按声明范围输入一个具体假设。';task.value='';return;}
+  activeTask.parameters.assumption=value;activeTask.scenario_id='scenario-local-'+Date.now().toString(36);activeTask.preserve_original_result=true;status.textContent='假设已更新，真实结果保持不变；此处尚未执行重算。';previewTask();
+});
+document.querySelector('#copy-task').addEventListener('click',async()=>{
+  if(!task.value){status.textContent='先选择一个思考操作。';return;}
+  try{await navigator.clipboard.writeText(task.value);status.textContent='完整后续任务已复制。';}catch(error){document.querySelector('#task-details').open=true;task.focus();task.select();status.textContent='任务已选中，请使用系统复制快捷键。';}
+});
+if(data.continuations.length){activeTask=data.continuations[0].task;previewTask();}
+</script></body></html>

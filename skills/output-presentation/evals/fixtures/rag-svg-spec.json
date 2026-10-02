@@ -1,0 +1,299 @@
+{
+  "schema_version": "1.0",
+  "spec_id": "rag-svg",
+  "request_id": "rag-explainer",
+  "result_ref": {
+    "result_id": "rag-process",
+    "revision": "1"
+  },
+  "decision": "selected",
+  "rationale": "用短句、关系图和可探索视图解释检索与生成，并保留核验限制。",
+  "presentation": {
+    "primary": "diagram",
+    "secondary": [
+      "text"
+    ],
+    "format": "svg",
+    "detail_level": "medium"
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "kind": "summary",
+      "source_field": "result.summary",
+      "source_block_ids": [],
+      "visibility": "visible"
+    },
+    {
+      "id": "s2",
+      "kind": "text",
+      "source_block_ids": [
+        "overview"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s3",
+      "kind": "diagram",
+      "source_block_ids": [
+        "flow"
+      ],
+      "visibility": "visible",
+      "learning_aid_ids": [
+        "a-example"
+      ]
+    },
+    {
+      "id": "s4",
+      "kind": "steps",
+      "source_block_ids": [
+        "steps"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s5",
+      "kind": "evidence_and_limits",
+      "source_block_ids": [
+        "overview",
+        "flow",
+        "steps"
+      ],
+      "visibility": "visible"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect",
+      "operation": "inspect_evidence",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "核验图中的检索与生成关系，并说明简化边界。"
+    },
+    {
+      "id": "compare",
+      "operation": "compare",
+      "target_block_ids": [
+        "overview",
+        "steps"
+      ],
+      "goal_ids": [
+        "g1"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "对照概念说明与过程步骤。"
+    },
+    {
+      "id": "assume",
+      "operation": "change_assumption",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {
+        "assumption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required_parameters": [
+        "assumption"
+      ],
+      "default_parameters": {
+        "assumption": "检索资料已经过期"
+      },
+      "prompt_text": "在独立场景中分析过期资料，保留真实结果。"
+    },
+    {
+      "id": "challenge",
+      "operation": "challenge",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "检查检索资料的相关性、时效性与回答依据。"
+    }
+  ],
+  "preservation": {
+    "required_evidence_ids": [
+      "rag-paper"
+    ],
+    "required_uncertainty_ids": [
+      "limit"
+    ],
+    "omitted_block_ids": []
+  },
+  "render_request": {
+    "renderer_id": "svg",
+    "section_ids": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5"
+    ]
+  },
+  "fallback": {
+    "on": [
+      "renderer_unavailable",
+      "render_failed"
+    ],
+    "renderer_id": "markdown",
+    "meets_explicit_format": true
+  },
+  "validation_requirements": [
+    "result_revision_matches",
+    "all_source_references_resolve",
+    "required_evidence_and_limits_present",
+    "diagram_nodes_and_edges_match",
+    "goal_coverage_complete",
+    "views_share_result_revision",
+    "learning_aids_labeled_or_reasoned",
+    "semantic_continuation_usable",
+    "change_status_correct",
+    "session_signals_grounded",
+    "baseline_saved_and_restorable"
+  ],
+  "goal_coverage": [
+    {
+      "goal_id": "g1",
+      "section_ids": [
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "check_method": "指出检索器、资料和模型的关系方向。"
+    },
+    {
+      "goal_id": "g2",
+      "section_ids": [
+        "s3",
+        "s5"
+      ],
+      "check_method": "说明反例与限制。"
+    }
+  ],
+  "views": {
+    "explain": {
+      "id": "explain",
+      "section_ids": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      }
+    },
+    "verify": {
+      "id": "verify",
+      "section_ids": [
+        "s5"
+      ],
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      }
+    }
+  },
+  "learning_aids": [
+    {
+      "id": "a-example",
+      "kind": "counterexample",
+      "target_block_ids": [
+        "flow"
+      ],
+      "content": "假设检索器取到了过期说明。模型即使使用这段资料，也可能给出不适用于当前情况的回答。",
+      "origin": "generated",
+      "label": "假设示例",
+      "assumptions": [
+        "仅用于说明检索资料的适用性问题",
+        "不代表任何实际产品或实测结果"
+      ],
+      "evidence_ids": []
+    }
+  ],
+  "learning_aids_reason": "用过期资料的假设说明为什么还需核验。",
+  "change_set": {
+    "status": "first_version",
+    "baseline_ref": null,
+    "changes": [],
+    "unchanged_block_ids": []
+  },
+  "adaptation": {
+    "applied_signal_ids": [],
+    "focus_block_ids": [
+      "flow"
+    ],
+    "deemphasized_block_ids": [],
+    "reason": "首次解释，以信息流和核验边界为重点。",
+    "check_offer": "offered"
+  },
+  "writing": {
+    "profile": "plain",
+    "max_sentence_chars": 70,
+    "glossary": [
+      {
+        "term": "检索器",
+        "definition": "寻找与问题相关资料的组件。"
+      },
+      {
+        "term": "生成模型",
+        "definition": "根据输入生成回答的模型。"
+      }
+    ]
+  },
+  "video": {
+    "narration_mode": "local",
+    "fps": 24,
+    "scenes": [
+      {
+        "id": "intro",
+        "title": "先理解检索与生成",
+        "source_block_ids": [
+          "overview"
+        ],
+        "narration": "RAG 把检索和生成结合起来。先找到与问题相关的资料，再把资料交给模型。"
+      },
+      {
+        "id": "flow",
+        "title": "资料怎样进入回答",
+        "source_block_ids": [
+          "flow"
+        ],
+        "highlight_node_ids": [
+          "retriever",
+          "passages",
+          "generator"
+        ],
+        "narration": "看这条信息流。问题进入检索器。检索器取得相关片段。模型再结合问题与资料生成回答。"
+      },
+      {
+        "id": "check",
+        "title": "有资料，仍然要核验",
+        "source_block_ids": [
+          "steps"
+        ],
+        "narration": "最后对照依据核验回答。假设资料已经过期，即使模型使用了资料，回答也可能不适用。这个反例是教学假设。"
+      }
+    ]
+  }
+}

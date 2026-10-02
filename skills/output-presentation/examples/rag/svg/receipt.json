@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "request_id": "rag-explainer",
+  "result_ref": {
+    "result_id": "rag-process",
+    "revision": "1"
+  },
+  "spec_id": "rag-svg",
+  "renderer_id": "svg",
+  "status": "generated",
+  "artifact_refs": [
+    {
+      "ref": "presentation.svg",
+      "format": "svg",
+      "media_type": "image/svg+xml",
+      "sha256": "c908a943ef91b8061eb9dfc7b195de3fb6227f0977663141a171e305f114ce10"
+    },
+    {
+      "ref": "guide.html",
+      "format": "html",
+      "media_type": "text/html",
+      "sha256": "41f1f206bf467a3d0d4fa57c0513d184ab958527908ff6db6bc739184a777898"
+    }
+  ],
+  "validation_results": [
+    {
+      "check_id": "contracts_and_bindings",
+      "status": "passed",
+      "message": "结构、引用、版本与同目录文件保存已检查"
+    },
+    {
+      "check_id": "writing_rules",
+      "status": "passed",
+      "message": "9 sentences checked; profile plain; ASD compliance not claimed"
+    },
+    {
+      "check_id": "semantic_review",
+      "status": "not_checked",
+      "message": "人工核对解释和教学示例是否忠于事实"
+    },
+    {
+      "check_id": "visual_review",
+      "status": "not_checked",
+      "message": "打开真实产物检查可读性和导航"
+    }
+  ],
+  "warnings": [
+    "静态检查不证明用户已经理解；人工语义与视觉检查需单独记录。"
+  ],
+  "feature_checks": [
+    {
+      "check_id": "R1",
+      "status": "passed",
+      "message": "理解目标已映射到内容与检查方法"
+    },
+    {
+      "check_id": "R2",
+      "status": "passed",
+      "message": "解释/核验绑定同一版本并保留原始数据"
+    },
+    {
+      "check_id": "R3",
+      "status": "passed",
+      "message": "用过期资料的假设说明为什么还需核验。"
+    },
+    {
+      "check_id": "R4",
+      "status": "passed",
+      "message": "4 个可复制完整任务；未执行外部回调"
+    },
+    {
+      "check_id": "R5",
+      "status": "passed",
+      "message": "first_version；基线已回读恢复"
+    },
+    {
+      "check_id": "R6",
+      "status": "passed",
+      "message": "首次解释，以信息流和核验边界为重点。"
+    }
+  ],
+  "baseline_receipt": {
+    "ref": "baseline.json",
+    "result_ref": {
+      "result_id": "rag-process",
+      "revision": "1"
+    },
+    "sha256": "af748687e2daada858577d37d1e6e7c653f99cfb27fba70a00371b9f2f527771",
+    "restored": true
+  },
+  "continuation_refs": [
+    "continuations.json"
+  ]
+}

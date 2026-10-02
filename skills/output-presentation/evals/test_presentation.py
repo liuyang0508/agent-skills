@@ -160,7 +160,7 @@ class Behaviors(unittest.TestCase):
 
     def test_html_is_offline_and_escapes_untrusted_input(self):
         r,s=fixture();r['result']['summary']='<script>alert(1)</script>'
-        text,_=self.render_text(r,s,'html');self.assertNotIn('<script>',text);self.assertIn('Content-Security-Policy',text);self.assertIn('href="#part-',text)
+        text,_=self.render_text(r,s,'html');self.assertNotIn('<script>alert(1)</script>',text);self.assertIn('Content-Security-Policy',text);self.assertIn('script-src',text);self.assertIn('aria-controls="verify"',text)
 
     def test_explicit_html_is_obeyed(self):
         r,s=fixture();r['intent']['explicit_format']='html';text,_=self.render_text(r,s,'html');self.assertTrue(text.startswith('<!doctype html>'))

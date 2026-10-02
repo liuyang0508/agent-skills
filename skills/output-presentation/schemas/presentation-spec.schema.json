@@ -733,6 +733,145 @@
     },
     "extensions": {
       "type": "object"
+    },
+    "writing": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "enum": [
+            "plain",
+            "ste-inspired"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rewrites": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "glossary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "term": {
+                "type": "string",
+                "minLength": 1
+              },
+              "definition": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "term",
+              "definition"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "max_sentence_words": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 40
+        },
+        "max_sentence_chars": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 120
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "video": {
+      "type": "object",
+      "properties": {
+        "narration_mode": {
+          "enum": [
+            "local",
+            "silent"
+          ]
+        },
+        "voice": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fps": {
+          "enum": [
+            12,
+            24,
+            30
+          ]
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "narration": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "maxItems": 1
+              },
+              "highlight_node_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "duration_seconds": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 45
+              },
+              "on_screen_text": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "narration",
+              "source_block_ids"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "narration_mode",
+        "scenes"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

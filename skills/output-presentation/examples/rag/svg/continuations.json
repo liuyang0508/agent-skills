@@ -1,0 +1,416 @@
+[
+  {
+    "id": "inspect",
+    "task": {
+      "operation": "inspect_evidence",
+      "request_id": "rag-explainer",
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      },
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "parameters": {},
+      "source_blocks": [
+        {
+          "id": "flow",
+          "kind": "relations",
+          "data": {
+            "nodes": [
+              {
+                "id": "question",
+                "label": "用户问题",
+                "definition": "问题提供本次需要回答的内容。"
+              },
+              {
+                "id": "retriever",
+                "label": "检索器",
+                "definition": "检索器寻找与问题相关的资料片段。"
+              },
+              {
+                "id": "passages",
+                "label": "相关资料",
+                "definition": "资料片段为生成模型提供额外的信息。"
+              },
+              {
+                "id": "generator",
+                "label": "生成模型",
+                "definition": "模型使用问题与检索到的资料生成回答。"
+              },
+              {
+                "id": "answer",
+                "label": "待核验回答",
+                "definition": "回答仍需对照资料与适用限制核验。"
+              }
+            ],
+            "edges": [
+              {
+                "id": "e1",
+                "from": "question",
+                "to": "retriever",
+                "label": "发起检索"
+              },
+              {
+                "id": "e2",
+                "from": "retriever",
+                "to": "passages",
+                "label": "取得片段"
+              },
+              {
+                "id": "e3",
+                "from": "passages",
+                "to": "generator",
+                "label": "提供上下文"
+              },
+              {
+                "id": "e4",
+                "from": "generator",
+                "to": "answer",
+                "label": "生成回答"
+              },
+              {
+                "id": "e5",
+                "from": "question",
+                "to": "generator",
+                "label": "提供问题"
+              }
+            ]
+          },
+          "evidence_ids": [
+            "rag-paper"
+          ],
+          "uncertainty_ids": [
+            "limit"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "rag-paper",
+          "title": "RAG 原始论文：检索增强生成",
+          "locator": "https://arxiv.org/abs/2005.11401"
+        }
+      ],
+      "uncertainties": [
+        {
+          "id": "limit",
+          "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。",
+          "affected_block_ids": [
+            "overview",
+            "flow",
+            "steps"
+          ]
+        }
+      ],
+      "instruction": "核验所列结论、原始依据、单位与限制；无法读取来源时明确缺口。",
+      "planner_prompt": "核验图中的检索与生成关系，并说明简化边界。",
+      "execution": "copy_to_upstream_agent"
+    }
+  },
+  {
+    "id": "compare",
+    "task": {
+      "operation": "compare",
+      "request_id": "rag-explainer",
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      },
+      "target_block_ids": [
+        "overview",
+        "steps"
+      ],
+      "goal_ids": [
+        "g1"
+      ],
+      "parameters": {},
+      "source_blocks": [
+        {
+          "id": "overview",
+          "kind": "text",
+          "data": {
+            "content": "RAG 把检索和生成结合起来。检索器取得相关资料。生成模型使用资料与问题生成回答。"
+          },
+          "evidence_ids": [
+            "rag-paper"
+          ],
+          "uncertainty_ids": [
+            "limit"
+          ]
+        },
+        {
+          "id": "steps",
+          "kind": "steps",
+          "data": {
+            "items": [
+              "先形成检索请求。",
+              "从资料源取得相关片段。",
+              "把片段与问题交给生成模型。",
+              "对照依据核验回答。"
+            ]
+          },
+          "evidence_ids": [
+            "rag-paper"
+          ],
+          "uncertainty_ids": [
+            "limit"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "rag-paper",
+          "title": "RAG 原始论文：检索增强生成",
+          "locator": "https://arxiv.org/abs/2005.11401"
+        }
+      ],
+      "uncertainties": [
+        {
+          "id": "limit",
+          "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。",
+          "affected_block_ids": [
+            "overview",
+            "flow",
+            "steps"
+          ]
+        }
+      ],
+      "instruction": "按一致维度比较所列内容；缺失数据标记未知，不能补造。",
+      "planner_prompt": "对照概念说明与过程步骤。",
+      "execution": "copy_to_upstream_agent"
+    }
+  },
+  {
+    "id": "assume",
+    "task": {
+      "operation": "change_assumption",
+      "request_id": "rag-explainer",
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      },
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "parameters": {
+        "assumption": "检索资料已经过期"
+      },
+      "source_blocks": [
+        {
+          "id": "flow",
+          "kind": "relations",
+          "data": {
+            "nodes": [
+              {
+                "id": "question",
+                "label": "用户问题",
+                "definition": "问题提供本次需要回答的内容。"
+              },
+              {
+                "id": "retriever",
+                "label": "检索器",
+                "definition": "检索器寻找与问题相关的资料片段。"
+              },
+              {
+                "id": "passages",
+                "label": "相关资料",
+                "definition": "资料片段为生成模型提供额外的信息。"
+              },
+              {
+                "id": "generator",
+                "label": "生成模型",
+                "definition": "模型使用问题与检索到的资料生成回答。"
+              },
+              {
+                "id": "answer",
+                "label": "待核验回答",
+                "definition": "回答仍需对照资料与适用限制核验。"
+              }
+            ],
+            "edges": [
+              {
+                "id": "e1",
+                "from": "question",
+                "to": "retriever",
+                "label": "发起检索"
+              },
+              {
+                "id": "e2",
+                "from": "retriever",
+                "to": "passages",
+                "label": "取得片段"
+              },
+              {
+                "id": "e3",
+                "from": "passages",
+                "to": "generator",
+                "label": "提供上下文"
+              },
+              {
+                "id": "e4",
+                "from": "generator",
+                "to": "answer",
+                "label": "生成回答"
+              },
+              {
+                "id": "e5",
+                "from": "question",
+                "to": "generator",
+                "label": "提供问题"
+              }
+            ]
+          },
+          "evidence_ids": [
+            "rag-paper"
+          ],
+          "uncertainty_ids": [
+            "limit"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "rag-paper",
+          "title": "RAG 原始论文：检索增强生成",
+          "locator": "https://arxiv.org/abs/2005.11401"
+        }
+      ],
+      "uncertainties": [
+        {
+          "id": "limit",
+          "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。",
+          "affected_block_ids": [
+            "overview",
+            "flow",
+            "steps"
+          ]
+        }
+      ],
+      "instruction": "在独立假设场景中分析这些内容；新研究或重算交回上游，保留真实结果。",
+      "planner_prompt": "在独立场景中分析过期资料，保留真实结果。",
+      "execution": "copy_to_upstream_agent",
+      "scenario_id": "scenario-f6f1fa3ddb6e04e4",
+      "preserve_original_result": true
+    }
+  },
+  {
+    "id": "challenge",
+    "task": {
+      "operation": "challenge",
+      "request_id": "rag-explainer",
+      "result_ref": {
+        "result_id": "rag-process",
+        "revision": "1"
+      },
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "parameters": {},
+      "source_blocks": [
+        {
+          "id": "flow",
+          "kind": "relations",
+          "data": {
+            "nodes": [
+              {
+                "id": "question",
+                "label": "用户问题",
+                "definition": "问题提供本次需要回答的内容。"
+              },
+              {
+                "id": "retriever",
+                "label": "检索器",
+                "definition": "检索器寻找与问题相关的资料片段。"
+              },
+              {
+                "id": "passages",
+                "label": "相关资料",
+                "definition": "资料片段为生成模型提供额外的信息。"
+              },
+              {
+                "id": "generator",
+                "label": "生成模型",
+                "definition": "模型使用问题与检索到的资料生成回答。"
+              },
+              {
+                "id": "answer",
+                "label": "待核验回答",
+                "definition": "回答仍需对照资料与适用限制核验。"
+              }
+            ],
+            "edges": [
+              {
+                "id": "e1",
+                "from": "question",
+                "to": "retriever",
+                "label": "发起检索"
+              },
+              {
+                "id": "e2",
+                "from": "retriever",
+                "to": "passages",
+                "label": "取得片段"
+              },
+              {
+                "id": "e3",
+                "from": "passages",
+                "to": "generator",
+                "label": "提供上下文"
+              },
+              {
+                "id": "e4",
+                "from": "generator",
+                "to": "answer",
+                "label": "生成回答"
+              },
+              {
+                "id": "e5",
+                "from": "question",
+                "to": "generator",
+                "label": "提供问题"
+              }
+            ]
+          },
+          "evidence_ids": [
+            "rag-paper"
+          ],
+          "uncertainty_ids": [
+            "limit"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "rag-paper",
+          "title": "RAG 原始论文：检索增强生成",
+          "locator": "https://arxiv.org/abs/2005.11401"
+        }
+      ],
+      "uncertainties": [
+        {
+          "id": "limit",
+          "text": "这张图简化了检索与生成过程。有资料不等于回答一定正确，仍需核验。",
+          "affected_block_ids": [
+            "overview",
+            "flow",
+            "steps"
+          ]
+        }
+      ],
+      "instruction": "检查结论的依据、适用边界和薄弱环节；区分已验证问题与待调查假说。",
+      "planner_prompt": "检查检索资料的相关性、时效性与回答依据。",
+      "execution": "copy_to_upstream_agent"
+    }
+  }
+]

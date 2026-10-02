@@ -1,0 +1,40 @@
+{
+  "topic": "RAG 如何把资料带进回答",
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "先理解检索与生成",
+      "source_block_ids": [
+        "overview"
+      ],
+      "narration": "RAG 把检索和生成结合起来。先找到与问题相关的资料，再把资料交给模型。",
+      "duration_seconds": 7.833333,
+      "audio_present": true
+    },
+    {
+      "id": "flow",
+      "title": "资料怎样进入回答",
+      "source_block_ids": [
+        "flow"
+      ],
+      "highlight_node_ids": [
+        "retriever",
+        "passages",
+        "generator"
+      ],
+      "narration": "看这条信息流。问题进入检索器。检索器取得相关片段。模型再结合问题与资料生成回答。",
+      "duration_seconds": 9.375011,
+      "audio_present": true
+    },
+    {
+      "id": "check",
+      "title": "有资料，仍然要核验",
+      "source_block_ids": [
+        "steps"
+      ],
+      "narration": "最后对照依据核验回答。假设资料已经过期，即使模型使用了资料，回答也可能不适用。这个反例是教学假设。",
+      "duration_seconds": 10.750023,
+      "audio_present": true
+    }
+  ]
+}

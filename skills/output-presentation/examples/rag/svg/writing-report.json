@@ -1,0 +1,17 @@
+{
+  "profile": "plain",
+  "sentences_checked": 9,
+  "violations": [],
+  "glossary": [
+    {
+      "term": "检索器",
+      "definition": "寻找与问题相关资料的组件。"
+    },
+    {
+      "term": "生成模型",
+      "definition": "根据输入生成回答的模型。"
+    }
+  ],
+  "asd_ste100_compliance": "not_claimed",
+  "semantic_review": "requires_review"
+}

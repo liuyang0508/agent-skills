@@ -16,6 +16,8 @@ except ImportError:
     raise SystemExit('Install requirements.txt in your Python environment (jsonschema 4).')
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import media_renderers as media
 OPERATIONS = ('compare', 'inspect_evidence', 'change_assumption', 'challenge')
 
 
@@ -40,13 +42,17 @@ def read_json(path):
 
 def write_file(path, text):
     """Never replace a different existing artifact; save and read back atomically."""
+    write_bytes(path, text.encode('utf-8'))
+
+
+def write_bytes(path, data):
     path = Path(path)
     if path.exists():
-        require(path.read_text(encoding='utf-8') == text, f'Output already exists with different content: {path}')
+        require(path.read_bytes() == data, f'Output already exists with different content: {path}')
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as tmp:
-        tmp.write(text)
+    with tempfile.NamedTemporaryFile(mode='wb', dir=path.parent, delete=False) as tmp:
+        tmp.write(data)
         tmp_path = Path(tmp.name)
     try:
         # A hard link makes creation atomic and does not overwrite a raced-in file.
@@ -54,7 +60,7 @@ def write_file(path, text):
         os.link(tmp_path, path)
     finally:
         tmp_path.unlink(missing_ok=True)
-    require(path.read_text(encoding='utf-8') == text, 'Saved artifact did not survive readback')
+    require(path.read_bytes() == data, 'Saved artifact did not survive readback')
 
 
 def write_json(path, value):
@@ -312,6 +318,23 @@ def validate_spec(spec, request):
     require(consent != 'accepted' or bool(questions), 'Accepted check needs questions')
     expected = compute_changes(request, spec['goal_coverage'], spec['sections'])
     require(spec['change_set'] == expected, 'Version differences are incomplete or fabricated; use changes command')
+    writing = spec.get('writing', {})
+    rewrites = writing.get('rewrites', {})
+    require(set(rewrites) <= shown, 'Writing rewrite targets content outside the presentation')
+    require(all(blocks[bid]['kind'] == 'text' for bid in rewrites), 'Writing rewrites apply to text blocks; keep graph facts structured')
+    glossary = writing.get('glossary', [])
+    require(len({g['term'].strip().casefold() for g in glossary}) == len(glossary), 'A glossary term has multiple definitions')
+    if spec['presentation']['format'] == 'mp4':
+        require('video' in spec, 'MP4 needs a content-driven video scene plan')
+        scenes = spec['video']['scenes']; indexed(scenes, 'video scene')
+        referenced = {bid for scene in scenes for bid in scene['source_block_ids']}
+        require(referenced == shown, 'Video scenes must cover the displayed result blocks exactly')
+        for scene in scenes:
+            block = blocks[scene['source_block_ids'][0]]
+            nodes = {n['id'] for n in block['data'].get('nodes', [])}
+            require(set(scene.get('highlight_node_ids', [])) <= nodes, 'Video highlights an unknown node')
+            if block['kind'] == 'relations':
+                require(len(nodes) <= 12, 'Split video graphs larger than 12 nodes into focused scenes')
     return spec
 
 
@@ -429,7 +452,8 @@ def make_chunks(request, spec):
                     lines.append('\n[' + md(bid) + '] 用户已了解的背景，完整内容可在核验视图查看。')
                 else:
                     focus = '重点：' if mode == 'explain' and bid in spec['adaptation']['focus_block_ids'] else ''
-                    lines.append('\n[' + md(bid) + '] ' + focus + '\n\n' + (md(overrides[bid]) if mode == 'explain' and bid in overrides else block_markdown(block)))
+                    rewrite = media.effective_text(block, spec) if mode == 'explain' else ''
+                    lines.append('\n[' + md(bid) + '] ' + focus + '\n\n' + (md(rewrite) if rewrite else block_markdown(block)))
                 if mode == 'verify':
                     lines.append('引用：' + md(', '.join(block['evidence_ids']) or '未提供') + '；限制：' + md(', '.join(block['uncertainty_ids']) or '无单独映射'))
                     lines.append('原始数据：' + md(canonical(block['data'])))
@@ -455,67 +479,72 @@ def make_chunks(request, spec):
         chunks.append(('可选理解检查', '\n'.join('- ' + md(q['question']) for q in adaptation['questions'])))
     elif adaptation['check_offer'] == 'offered':
         chunks.append(('可选理解检查', '如愿意，可在当前会话接受简短理解检查；也可以跳过。'))
+    glossary = spec.get('writing', {}).get('glossary', [])
+    if glossary:
+        chunks.append(('术语说明', '\n'.join('- ' + md(g['term']) + '：' + md(g['definition']) for g in glossary)))
     return chunks
 
 
-def html_body(markdown):
-    """Render only our small generated Markdown dialect, never user HTML."""
-    def literal(text):
-        return html.escape(re.sub(r'\\([\\`*_{}\[\]<>#|])', r'\1', text))
-    lines = markdown.splitlines()
-    output = []
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        if line.startswith('```'):
-            code = []
-            i += 1
-            while i < len(lines) and not lines[i].startswith('```'):
-                code.append(lines[i]); i += 1
-            output.append('<pre><code>' + html.escape('\n'.join(code)) + '</code></pre>')
-        elif line.startswith('| ') and i + 1 < len(lines) and lines[i + 1].startswith('| ---'):
-            def cells(row):
-                return [literal(c.strip()) for c in re.split(r'(?<!\\)\|', row)[1:-1]]
-            headers = cells(line)
-            i += 2
-            rows = []
-            while i < len(lines) and lines[i].startswith('| '):
-                rows.append('<tr>' + ''.join('<td>' + c + '</td>' for c in cells(lines[i])) + '</tr>'); i += 1
-            output.append('<div class="table-wrap"><table><thead><tr>' + ''.join('<th scope="col">' + c + '</th>' for c in headers) + '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div>')
-            continue
-        elif line.startswith('### '):
-            output.append('<h3>' + literal(line[4:]) + '</h3>')
-        elif line.strip():
-            output.append('<p>' + literal(line) + '</p>')
-        i += 1
-    return ''.join(output)
-
-
 def render(request, spec, out_dir):
+    """Build a complete bundle before publishing files into the chosen directory."""
+    out = Path(out_dir).resolve()
+    if spec.get('presentation', {}).get('format') == 'mp4':
+        require(not (out / 'presentation.mp4').exists(), 'Video output exists; use a new output directory')
+    with tempfile.TemporaryDirectory(prefix='presentation-bundle-') as directory:
+        staging = Path(directory)
+        receipt = _render_bundle(request, spec, staging)
+        files = [path for path in staging.iterdir() if path.is_file()]
+        for path in files:
+            target = out / path.name
+            require(not target.exists() or target.read_bytes() == path.read_bytes(), f'Output already exists with different content: {target}')
+        for path in files:
+            write_bytes(out / path.name, path.read_bytes())
+    return receipt
+
+
+def _render_bundle(request, spec, out_dir):
     validate_spec(spec, request)
     require(request['mode'] == 'render' and spec['decision'] == 'selected', 'Render needs render mode and a selected spec')
     fmt = spec['presentation']['format']
-    require(fmt in ('markdown', 'html') and spec['render_request']['renderer_id'] == fmt, 'Bundled renderer supports only markdown or html; use the host renderer otherwise')
-    require(all(a['delivery_mode'] == 'prompt' for a in spec['interactions']), 'Bundled renderer implements prompt continuations only, not host callbacks or local actions')
+    require(fmt in ('markdown', 'html', 'svg', 'mp4') and spec['render_request']['renderer_id'] == fmt, 'Available renderers: markdown, html, svg, mp4; use a host renderer for other formats')
+    require(all(a['delivery_mode'] == 'prompt' or (fmt == 'html' and a['delivery_mode'] == 'local' and a['operation'] in ('compare', 'inspect_evidence')) for a in spec['interactions']), 'Use prompt continuations, or HTML local compare/inspect; host callbacks need a host adapter')
+    style = media.writing_report(request, spec)
+    if 'writing' in spec:
+        require(not style['violations'], 'Writing exceeds configured sentence limits: ' + canonical(style['violations'][:3]))
+    out = Path(out_dir).resolve()
+    require(not (out / 'presentation.mp4').exists() if fmt == 'mp4' else True, 'Video output exists; use a new output directory')
     chunks = make_chunks(request, spec)
     continuations = [dict(id=a['id'], task=continue_task(request, spec, a['id'])) for a in spec['interactions']]
     for continuation in continuations:
         chunks.append(('继续思考 ' + continuation['id'], '将以下完整任务复制给上游 Agent：\n\n```json\n' + json.dumps(continuation['task'], ensure_ascii=False, indent=2) + '\n```'))
     title = request['intent']['goal']
     if fmt == 'markdown':
-        artifact = '# ' + md(title) + '\n\n' + '\n\n'.join('## ' + name + '\n\n' + body for name, body in chunks) + '\n'
-        media = 'text/markdown'
+        artifact = media.readable_markdown(request,spec,continuations) if 'writing' in spec else '# ' + md(title) + '\n\n' + '\n\n'.join('## ' + name + '\n\n' + body for name, body in chunks) + '\n'
+        mime = 'text/markdown'
+    elif fmt == 'html':
+        artifact = media.interactive_html(request, spec, continuations)
+        mime = 'text/html'
+    elif fmt == 'svg':
+        artifact = media.diagram_svg(request, spec)
+        mime = 'image/svg+xml'
     else:
-        # Native anchors/details work offline; untrusted data is escaped, never executed.
-        nav = ' '.join(f'<a href="#part-{i}">{html.escape(name)}</a>' for i, (name, _) in enumerate(chunks))
-        content = ''.join(f'<section id="part-{i}"><h2>{html.escape(name)}</h2>{html_body(body)}</section>' for i, (name, body) in enumerate(chunks))
-        language = html.escape(request['intent'].get('language', 'zh-CN'), quote=True)
-        artifact = '<!doctype html><html lang="' + language + '"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'"><title>' + html.escape(title) + '</title><style>body{max-width:920px;margin:2rem auto;padding:0 1rem;font-family:system-ui,sans-serif;line-height:1.7;color:#17242d}nav{display:flex;gap:1rem;flex-wrap:wrap}section{margin:2rem 0;border-top:1px solid #ddd}p{overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6f8;padding:1rem;border-radius:.5rem}a{color:#175b7e}h1{font-size:1.8rem}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:.5rem;border-bottom:1px solid #ddd}.table-wrap{overflow:auto}</style><body><h1>' + html.escape(title) + '</h1><nav aria-label="内容导航">' + nav + '</nav><main>' + content + '</main></body></html>'
-        media = 'text/html'
-    require(len(artifact.encode()) <= request['constraints'].get('max_output_bytes', sys.maxsize), 'Artifact exceeds max_output_bytes')
-    out = Path(out_dir).resolve()
-    artifact_path = out / ('presentation.md' if fmt == 'markdown' else 'presentation.html')
-    write_file(artifact_path, artifact)
+        artifact = None; mime = 'video/mp4'
+    if fmt == 'markdown': mime = 'text/markdown'
+    suffix = {'markdown': 'md', 'html': 'html', 'svg': 'svg', 'mp4': 'mp4'}[fmt]
+    artifact_path = out / ('presentation.' + suffix)
+    video_info = None
+    if artifact is not None:
+        require(len(artifact.encode()) <= request['constraints'].get('max_output_bytes', sys.maxsize), 'Artifact exceeds max_output_bytes')
+        write_file(artifact_path, artifact)
+    else:
+        artifact_path, video_info = media.render_video(request, spec, out)
+        require(artifact_path.stat().st_size <= request['constraints'].get('max_output_bytes', sys.maxsize), 'Encoded video exceeds max_output_bytes; simplify the scene plan')
+    additional = []
+    if fmt in ('svg', 'mp4'):
+        guide = media.interactive_html(request, spec, continuations)
+        write_file(out / 'guide.html', guide)
+        additional.append({'ref': 'guide.html', 'format': 'html', 'media_type': 'text/html', 'sha256': hashlib.sha256(guide.encode()).hexdigest()})
+    write_json(out / 'writing-report.json', style)
     write_json(out / 'continuations.json', continuations)
     baseline = {'result': request['result'], 'spec_ref': spec['spec_id'], 'artifact_refs': [{'ref': artifact_path.name, 'format': fmt}]}
     write_json(out / 'baseline.json', baseline)
@@ -524,7 +553,11 @@ def render(request, spec, out_dir):
     passed = lambda name, message: {'check_id': name, 'status': 'passed', 'message': message}
     checks = [passed('R1', '理解目标已映射到内容与检查方法'), passed('R2', '解释/核验绑定同一版本并保留原始数据'), passed('R3', spec['learning_aids_reason']), passed('R4', f'{len(continuations)} 个可复制完整任务；未执行外部回调'), passed('R5', spec['change_set']['status'] + '；基线已回读恢复'), passed('R6', spec['adaptation']['reason'])]
     digest = lambda data: hashlib.sha256(data).hexdigest()
-    receipt = {'schema_version': '1.0', 'request_id': request['request_id'], 'result_ref': result_ref(request['result']), 'spec_id': spec['spec_id'], 'renderer_id': fmt, 'status': 'generated', 'artifact_refs': [{'ref': artifact_path.name, 'format': fmt, 'media_type': media, 'sha256': digest(artifact_path.read_bytes())}], 'validation_results': [passed('contracts_and_bindings', '结构、引用、版本与同目录文件保存已检查'), {'check_id': 'semantic_review', 'status': 'not_checked', 'message': '人工核对解释和教学示例是否忠于事实'}, {'check_id': 'visual_review', 'status': 'not_checked', 'message': '打开真实产物检查可读性和导航'}], 'warnings': ['静态检查不证明用户已经理解；未进行人工语义和视觉检查。'], 'feature_checks': checks, 'baseline_receipt': {'ref': 'baseline.json', 'result_ref': result_ref(request['result']), 'sha256': digest((out / 'baseline.json').read_bytes()), 'restored': True}, 'continuation_refs': ['continuations.json']}
+    writing_check={'check_id':'writing_rules','status':'failed' if style['violations'] else 'passed','message':f'{style["sentences_checked"]} sentences checked; profile {style["profile"]}; ASD compliance not claimed'}
+    validations = [passed('contracts_and_bindings', '结构、引用、版本与同目录文件保存已检查'), writing_check, {'check_id': 'semantic_review', 'status': 'not_checked', 'message': '人工核对解释和教学示例是否忠于事实'}, {'check_id': 'visual_review', 'status': 'not_checked', 'message': '打开真实产物检查可读性和导航'}]
+    if video_info:
+        validations.append(passed('video_streams', 'ffprobe verified video/subtitles and requested narration audio'))
+    receipt = {'schema_version': '1.0', 'request_id': request['request_id'], 'result_ref': result_ref(request['result']), 'spec_id': spec['spec_id'], 'renderer_id': fmt, 'status': 'generated', 'artifact_refs': [{'ref': artifact_path.name, 'format': fmt, 'media_type': mime, 'sha256': digest(artifact_path.read_bytes())}] + additional, 'validation_results': validations, 'warnings': ['静态检查不证明用户已经理解；人工语义与视觉检查需单独记录。'], 'feature_checks': checks, 'baseline_receipt': {'ref': 'baseline.json', 'result_ref': result_ref(request['result']), 'sha256': digest((out / 'baseline.json').read_bytes()), 'restored': True}, 'continuation_refs': ['continuations.json']}
     schema_check('receipt', receipt)
     write_json(out / 'receipt.json', receipt)
     return receipt
@@ -533,6 +566,8 @@ def render(request, spec, out_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
+    sub.add_parser('doctor')
+    p = sub.add_parser('lint-writing'); p.add_argument('request'); p.add_argument('spec'); p.add_argument('-o', '--output', required=True)
     p = sub.add_parser('prepare'); p.add_argument('request'); p.add_argument('-o', '--output', required=True)
     p = sub.add_parser('validate'); p.add_argument('kind', choices=['request', 'spec', 'receipt']); p.add_argument('file'); p.add_argument('--request')
     p = sub.add_parser('changes'); p.add_argument('request'); p.add_argument('--spec'); p.add_argument('-o', '--output', required=True)
@@ -541,7 +576,12 @@ def main(argv=None):
     p = sub.add_parser('feedback'); p.add_argument('request'); p.add_argument('--id', required=True); p.add_argument('--text', required=True); p.add_argument('--source-ref', required=True); p.add_argument('--blocks', nargs='+', required=True); p.add_argument('--consent', choices=['accepted', 'declined']); p.add_argument('-o', '--output', required=True)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'prepare':
+        if args.command == 'doctor':
+            print(json.dumps(media.dependencies(), ensure_ascii=False))
+        elif args.command == 'lint-writing':
+            request = validate_request(read_json(args.request)); spec = validate_spec(read_json(args.spec), request)
+            write_json(args.output, media.writing_report(request, spec))
+        elif args.command == 'prepare':
             write_json(args.output, prepare(read_json(args.request)))
         elif args.command == 'validate':
             value = read_json(args.file)
