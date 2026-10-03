@@ -120,6 +120,8 @@ def readable_markdown(request,spec,continuations):
 
 
 def wrap_text(value, width=18):
+    if '\n' in value or '\r' in value:
+        return [line for paragraph in re.split(r'\r\n|\r|\n', value) for line in wrap_text(paragraph, width)]
     if re.search(r'[\u4e00-\u9fff]', value):
         return [value[i:i+width] for i in range(0, len(value), width)] or ['']
     lines, line = [], ''

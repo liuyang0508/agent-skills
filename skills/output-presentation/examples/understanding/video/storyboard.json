@@ -1,0 +1,52 @@
+{
+  "topic": "复杂结果，怎样才容易理解？",
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "模型有了答案，你需要看明白",
+      "source_block_ids": [
+        "overview"
+      ],
+      "on_screen_text": "读懂结论。核验依据。决定下一步。\n从一份已有结果开始。",
+      "narration": "模型给出结果。你还需要读懂结论、核验依据，并决定下一步。",
+      "duration_seconds": 6.333333,
+      "audio_present": true
+    },
+    {
+      "id": "flow",
+      "title": "先明确目标，再选择表达",
+      "source_block_ids": [
+        "flow"
+      ],
+      "highlight_node_ids": [
+        "goal",
+        "form"
+      ],
+      "narration": "先明确理解目标。再选合适的表达。始终保留依据、限制和后续任务。",
+      "duration_seconds": 7.125,
+      "audio_present": true
+    },
+    {
+      "id": "formats",
+      "title": "同一份内容，四个理解入口",
+      "source_block_ids": [
+        "formats"
+      ],
+      "on_screen_text": "文字：读懂结论与步骤。\n图解：看清方向与关系。\n网页：主动探索与核验。\n视频：跟随时间理解过程。",
+      "narration": "文字读结论，图解看关系。网页探依据，视频跟过程。按任务选择一个主产物。",
+      "duration_seconds": 7.958333,
+      "audio_present": true
+    },
+    {
+      "id": "capabilities",
+      "title": "表达可以变，核验始终在",
+      "source_block_ids": [
+        "capabilities"
+      ],
+      "on_screen_text": "理解目标 · 解释与核验 · 对照与反例\n语义续接 · 版本更新 · 理解适配\n清楚的表达，也需要真实的依据。",
+      "narration": "六项能力贯穿不同形式。假设资料过期，精美视频也不能证明结论正确。这是教学反例。",
+      "duration_seconds": 8.833333,
+      "audio_present": true
+    }
+  ]
+}

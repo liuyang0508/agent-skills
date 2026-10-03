@@ -1,0 +1,289 @@
+{
+  "schema_version": "1.0",
+  "spec_id": "understanding-markdown",
+  "request_id": "understanding-demo",
+  "result_ref": {
+    "result_id": "understanding-workflow",
+    "revision": "1"
+  },
+  "decision": "selected",
+  "rationale": "用同一份有依据的内容比较四种表达，展示理解、核验与续接如何连接。",
+  "presentation": {
+    "primary": "text",
+    "secondary": [
+      "text"
+    ],
+    "format": "markdown",
+    "detail_level": "medium"
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "kind": "summary",
+      "source_field": "result.summary",
+      "source_block_ids": [],
+      "visibility": "visible"
+    },
+    {
+      "id": "s2",
+      "kind": "text",
+      "source_block_ids": [
+        "overview"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s3",
+      "kind": "diagram",
+      "source_block_ids": [
+        "flow"
+      ],
+      "visibility": "visible",
+      "learning_aid_ids": [
+        "a-example"
+      ]
+    },
+    {
+      "id": "s4",
+      "kind": "table",
+      "source_block_ids": [
+        "formats"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s5",
+      "kind": "text",
+      "source_block_ids": [
+        "capabilities"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s6",
+      "kind": "evidence_and_limits",
+      "source_block_ids": [
+        "overview",
+        "flow",
+        "formats",
+        "capabilities"
+      ],
+      "visibility": "visible"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect",
+      "operation": "inspect_evidence",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "核验理解目标、表达选择与续接的来源，区分原帖方向与 Skill 扩展。"
+    },
+    {
+      "id": "compare",
+      "operation": "compare",
+      "target_block_ids": [
+        "formats"
+      ],
+      "goal_ids": [
+        "g1"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "比较四种表达形式，按当前理解任务选择一个主产物。"
+    },
+    {
+      "id": "assume",
+      "operation": "change_assumption",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {
+        "assumption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required_parameters": [
+        "assumption"
+      ],
+      "default_parameters": {
+        "assumption": "原始结果没有提供来源"
+      },
+      "prompt_text": "在独立场景中分析缺少来源时如何呈现与核验；不要把清楚的表达当成事实证明。"
+    },
+    {
+      "id": "challenge",
+      "operation": "challenge",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "检查表达是否保留事实、依据、限制，并指出最容易误解的环节。"
+    }
+  ],
+  "preservation": {
+    "required_evidence_ids": [
+      "karpathy",
+      "skill"
+    ],
+    "required_uncertainty_ids": [
+      "choice",
+      "correctness",
+      "continuation",
+      "media"
+    ],
+    "omitted_block_ids": []
+  },
+  "render_request": {
+    "renderer_id": "markdown",
+    "section_ids": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6"
+    ]
+  },
+  "fallback": {
+    "on": [
+      "renderer_unavailable",
+      "render_failed"
+    ],
+    "renderer_id": "markdown",
+    "meets_explicit_format": true
+  },
+  "validation_requirements": [
+    "result_revision_matches",
+    "all_source_references_resolve",
+    "required_evidence_and_limits_present",
+    "diagram_nodes_and_edges_match",
+    "goal_coverage_complete",
+    "views_share_result_revision",
+    "learning_aids_labeled_or_reasoned",
+    "semantic_continuation_usable",
+    "change_status_correct",
+    "session_signals_grounded",
+    "baseline_saved_and_restorable"
+  ],
+  "goal_coverage": [
+    {
+      "goal_id": "g1",
+      "section_ids": [
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "check_method": "把四种理解任务与表达形式配对。"
+    },
+    {
+      "goal_id": "g2",
+      "section_ids": [
+        "s3",
+        "s5",
+        "s6"
+      ],
+      "check_method": "指出核验入口，说明表达清楚不等于内容正确。"
+    }
+  ],
+  "views": {
+    "explain": {
+      "id": "explain",
+      "section_ids": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "result_ref": {
+        "result_id": "understanding-workflow",
+        "revision": "1"
+      }
+    },
+    "verify": {
+      "id": "verify",
+      "section_ids": [
+        "s6"
+      ],
+      "result_ref": {
+        "result_id": "understanding-workflow",
+        "revision": "1"
+      }
+    }
+  },
+  "learning_aids": [
+    {
+      "id": "a-example",
+      "kind": "counterexample",
+      "target_block_ids": [
+        "flow"
+      ],
+      "content": "假设一份分析引用了过期资料。即使把分析做成精美网页和视频，结论仍可能不适用于当前情况。",
+      "origin": "generated",
+      "label": "假设示例",
+      "assumptions": [
+        "仅用于区分清晰表达与事实正确",
+        "不代表实测效果或实际业务结论"
+      ],
+      "evidence_ids": []
+    }
+  ],
+  "learning_aids_reason": "用过期资料的假设反例说明，改变表达不能代替核验。",
+  "change_set": {
+    "status": "first_version",
+    "baseline_ref": null,
+    "changes": [],
+    "unchanged_block_ids": []
+  },
+  "adaptation": {
+    "applied_signal_ids": [],
+    "focus_block_ids": [
+      "flow",
+      "formats"
+    ],
+    "deemphasized_block_ids": [],
+    "reason": "面向首次了解本 Skill 的读者，先看用途、形式选择和核验边界。",
+    "check_offer": "offered"
+  },
+  "writing": {
+    "profile": "ste-inspired",
+    "max_sentence_chars": 70,
+    "summary": "先明确需要理解什么。再选合适的表达形式。始终保留依据、限制和继续思考的入口。",
+    "rewrites": {
+      "overview": "模型给出结果。你还需要理解结论、核验依据，并决定下一步。先明确需要理解什么。再选合适的表达形式。保留原始事实、依据和限制。",
+      "capabilities": "六项能力贯穿不同形式。先明确理解目标。把解释与核验连起来。用反例照亮边界。为下一步准备完整任务。结果更新时先看变化。围绕当前困惑重新解释。"
+    },
+    "glossary": [
+      {
+        "term": "理解目标",
+        "definition": "看完后需要分清的关系、找到的依据或完成的判断。"
+      },
+      {
+        "term": "核验",
+        "definition": "对照原始内容、来源和限制检查结论。"
+      },
+      {
+        "term": "续接",
+        "definition": "把当前问题与依据组织成可继续交给 Agent 的任务。"
+      }
+    ]
+  }
+}

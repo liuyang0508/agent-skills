@@ -22,6 +22,7 @@
 {"id": "test_media_renderers.MediaBehaviors.test_video_frame_depends_on_topic_data", "expected": "observable_behavior"}
 {"id": "test_media_renderers.MediaBehaviors.test_video_frame_preserves_edge_meaning", "expected": "observable_behavior"}
 {"id": "test_media_renderers.MediaBehaviors.test_video_has_actual_progress_between_frames", "expected": "observable_behavior"}
+{"id": "test_media_renderers.MediaBehaviors.test_video_multiline_text_has_separate_nonoverlapping_lines", "expected": "observable_behavior"}
 {"id": "test_media_renderers.MediaBehaviors.test_video_plan_must_cover_content_not_fixed_advertising", "expected": "observable_behavior"}
 {"id": "test_media_renderers.MediaBehaviors.test_writing_rewrite_is_used_but_original_is_restorable", "expected": "observable_behavior"}
 {"id": "test_presentation.Behaviors.test_accepted_quiz_has_goal_linked_questions", "expected": "observable_behavior"}

@@ -1,0 +1,189 @@
+{
+  "result": {
+    "result_id": "understanding-workflow",
+    "revision": "1",
+    "summary": "先明确需要理解什么。再选合适的表达形式。始终保留依据、限制和继续思考的入口。",
+    "blocks": [
+      {
+        "id": "overview",
+        "kind": "text",
+        "data": {
+          "content": "模型完成复杂分析后，读者仍需把握结论之间的关系、核验资料与适用条件并作出下一步判断，因此需要按理解目标组织已有结果，在清晰文字、关系图解、交互网页和场景讲解视频之间选择合适的表达，同时保留原始事实、依据与限制。"
+        },
+        "evidence_ids": [
+          "karpathy",
+          "skill"
+        ],
+        "uncertainty_ids": [
+          "choice",
+          "correctness"
+        ]
+      },
+      {
+        "id": "flow",
+        "kind": "relations",
+        "data": {
+          "nodes": [
+            {
+              "id": "result",
+              "label": "原始结果",
+              "definition": "已有的结论、数据、资料来源和适用限制。只给主题时，先由 Agent 准备有依据的内容。"
+            },
+            {
+              "id": "goal",
+              "label": "理解目标",
+              "definition": "明确读者需要分清什么关系、找到什么依据、完成什么判断。"
+            },
+            {
+              "id": "form",
+              "label": "合适的表达",
+              "definition": "按需要选择清晰文字、SVG 图解、交互网页或讲解视频。通常生成一个主产物。"
+            },
+            {
+              "id": "verify",
+              "label": "核验与续接",
+              "definition": "保留同一版本的原始结果、依据和限制。读者可以核验、比较或准备下一步任务。"
+            }
+          ],
+          "edges": [
+            {
+              "id": "e1",
+              "from": "result",
+              "to": "goal",
+              "label": "明确目标"
+            },
+            {
+              "id": "e2",
+              "from": "goal",
+              "to": "form",
+              "label": "选择形式"
+            },
+            {
+              "id": "e3",
+              "from": "form",
+              "to": "verify",
+              "label": "保留依据"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "skill"
+        ],
+        "uncertainty_ids": [
+          "choice",
+          "correctness",
+          "continuation"
+        ]
+      },
+      {
+        "id": "formats",
+        "kind": "comparison",
+        "data": {
+          "columns": [
+            "表达形式",
+            "适合的理解任务",
+            "本例产物"
+          ],
+          "rows": [
+            {
+              "表达形式": "清晰文字",
+              "适合的理解任务": "读懂结论与步骤",
+              "本例产物": "短句说明与完整原文"
+            },
+            {
+              "表达形式": "SVG 图解",
+              "适合的理解任务": "看清方向与关系",
+              "本例产物": "可缩放的流程图"
+            },
+            {
+              "表达形式": "交互网页",
+              "适合的理解任务": "主动探索与核验",
+              "本例产物": "节点、搜索与依据切换"
+            },
+            {
+              "表达形式": "讲解视频",
+              "适合的理解任务": "跟随时间理解过程",
+              "本例产物": "二维动画、旁白与字幕"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "karpathy",
+          "skill"
+        ],
+        "uncertainty_ids": [
+          "choice",
+          "media"
+        ]
+      },
+      {
+        "id": "capabilities",
+        "kind": "text",
+        "data": {
+          "content": "本 Skill 将理解目标、解释与核验、对照与反例、语义续接、版本更新、理解适配作为六项共同能力。它们贯穿不同表达形式。首次生成保存基线；结果更新后对比真实变化。围绕当前会话的困惑重讲；理解检查允许跳过。"
+        },
+        "evidence_ids": [
+          "skill"
+        ],
+        "uncertainty_ids": [
+          "correctness",
+          "continuation"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "karpathy",
+        "title": "Karpathy：帮助理解模型输出的四类表达方向",
+        "locator": "https://x.com/karpathy/status/2105819303471976479"
+      },
+      {
+        "id": "skill",
+        "title": "Output Presentation 0.2.0：输出形式与六项能力",
+        "locator": "https://github.com/liuyang0508/agent-skills/blob/37f1046e3cbecf0c004e954039f5b8653bf7d07d/skills/output-presentation/SKILL.md"
+      }
+    ],
+    "uncertainties": [
+      {
+        "id": "choice",
+        "text": "四种形式按理解任务选择。本例为了比较才同时生成四种产物。六项能力为本 Skill 的扩展，不是 Karpathy 原帖列出的功能。",
+        "affected_block_ids": [
+          "overview",
+          "flow",
+          "formats"
+        ]
+      },
+      {
+        "id": "correctness",
+        "text": "表达更清楚不能证明内容正确，也不能证明读者已理解。仍需核验原始依据与适用条件。",
+        "affected_block_ids": [
+          "overview",
+          "flow",
+          "capabilities"
+        ]
+      },
+      {
+        "id": "continuation",
+        "text": "静态网页可以查看已有内容并准备后续任务。改变假设后，需要把任务交给 Agent 才会继续研究或重算。",
+        "affected_block_ids": [
+          "flow",
+          "capabilities"
+        ]
+      },
+      {
+        "id": "media",
+        "text": "写作模式不声明 ASD-STE100 合规。视频链路生成二维场景、本地旁白和字幕；复杂三维场景需相应工具。",
+        "affected_block_ids": [
+          "formats"
+        ]
+      }
+    ]
+  },
+  "spec_ref": "understanding-mp4",
+  "artifact_refs": [
+    {
+      "ref": "presentation.mp4",
+      "format": "mp4"
+    }
+  ]
+}

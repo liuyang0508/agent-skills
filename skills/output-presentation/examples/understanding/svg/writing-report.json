@@ -1,0 +1,21 @@
+{
+  "profile": "ste-inspired",
+  "sentences_checked": 15,
+  "violations": [],
+  "glossary": [
+    {
+      "term": "理解目标",
+      "definition": "看完后需要分清的关系、找到的依据或完成的判断。"
+    },
+    {
+      "term": "核验",
+      "definition": "对照原始内容、来源和限制检查结论。"
+    },
+    {
+      "term": "续接",
+      "definition": "把当前问题与依据组织成可继续交给 Agent 的任务。"
+    }
+  ],
+  "asd_ste100_compliance": "not_claimed",
+  "semantic_review": "requires_review"
+}

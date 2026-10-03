@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -110,6 +111,17 @@ class MediaBehaviors(unittest.TestCase):
     def test_video_has_actual_progress_between_frames(self):
         r,s=sample('mp4');scene=s['video']['scenes'][1];block=r['result']['blocks'][1]
         self.assertNotEqual(media.video_frame(r,scene,block,.1).tobytes(),media.video_frame(r,scene,block,.8).tobytes())
+
+    def test_video_multiline_text_has_separate_nonoverlapping_lines(self):
+        r,s=sample('mp4');scene=copy.deepcopy(s['video']['scenes'][0]);block=r['result']['blocks'][0]
+        lines=['文字：先看结论。','图解：再看关系。','Web: inspect the evidence.']
+        scene['on_screen_text']='\n'.join(lines)
+        with patch('PIL.ImageDraw.ImageDraw.text',autospec=True) as draw:
+            media.video_frame(r,scene,block,.5)
+        positions={call.args[2]:call.args[1] for call in draw.call_args_list if call.args[2] in lines}
+        self.assertEqual(set(positions),set(lines))
+        for before,after in zip(lines,lines[1:]):
+            self.assertGreaterEqual(positions[after][1]-positions[before][1],25)
 
     def test_video_frame_preserves_edge_meaning(self):
         r,s=sample('mp4');scene=s['video']['scenes'][1];block=r['result']['blocks'][1]

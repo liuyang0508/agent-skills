@@ -4,15 +4,17 @@
 
 [![Output Presentation：六步动态讲解](skills/output-presentation/showcase/demo.gif)](https://liuyang0508.github.io/agent-skills/skills/output-presentation/showcase/)
 
-**[体验同主题的四种讲解 ↗](https://liuyang0508.github.io/agent-skills/skills/output-presentation/examples/rag/) · [观看动态讲解 ↗](https://liuyang0508.github.io/agent-skills/skills/output-presentation/showcase/) · [浏览 Skill 合集 ↗](https://liuyang0508.github.io/agent-skills/)**
+**[体验同一份结果的四种表达 ↗](https://liuyang0508.github.io/agent-skills/skills/output-presentation/examples/understanding/) · [观看六步动态讲解 ↗](https://liuyang0508.github.io/agent-skills/skills/output-presentation/showcase/) · [浏览 Skill 合集 ↗](https://liuyang0508.github.io/agent-skills/)**
 
 | Skill | 用途 | 版本 |
 | --- | --- | --- |
 | [output-presentation](skills/output-presentation/SKILL.md) | 用清晰文字、图解、交互网页和讲解视频帮助理解结果 | 0.2.0 |
 
-## 一个主题，四种理解方式
+## 一份结果，四种理解方式
 
-以“RAG 如何把资料带进回答”为例，查看[完整示例](skills/output-presentation/examples/rag/index.html)：同一份带来源的内容可以变成四种实际产物。
+模型给出结果，你还需要读懂结论、看清关系、找到依据。查看[主示例](skills/output-presentation/examples/understanding/index.html)，亲自切换清晰文字、图解、交互网页与带旁白的视频，理解这个 Skill 怎样帮助你看明白。
+
+四种产物来自同一份有来源的内容。表达形式按任务选择，本例为了比较才同时生成四种。
 
 | 输出 | 可以做什么 |
 | --- | --- |
@@ -23,7 +25,9 @@
 
 `ste-inspired` 借鉴受控语言的表达原则，不声明 ASD-STE100 合规。视频适合流程、关系、数据与概念讲解；需要三维场景或物理仿真时，应使用相应的制作工具。
 
-可以直接向 Agent 提问：“用图解和短视频讲清楚 RAG，保留资料来源。”也可以提供已经完成的分析，让它选择适合的讲解方式。只给主题时，Agent 先准备有依据的内容，再生成产物。
+可以直接向 Agent 提问：“把这份结果讲清楚，保留来源和限制，选择最适合的表达方式。”也可以只给主题；Agent 先准备有依据的内容，再生成产物。[RAG 案例](skills/output-presentation/examples/rag/index.html)演示这一过程在具体技术主题上的应用。
+
+四种表达方向参考 [Karpathy 的原帖](https://x.com/karpathy/status/2105819303471976479)。下面的六项理解能力是本 Skill 的设计扩展。
 
 ## 安装
 
@@ -48,11 +52,7 @@ Markdown、SVG 和 HTML 可离线生成。MP4 还需要本机的 `ffmpeg`、`ffp
 
 ```sh
 demo_dir="$(mktemp -d)"
-.venv/bin/python skills/output-presentation/scripts/presentation.py prepare skills/output-presentation/evals/fixtures/rag-request.json -o "$demo_dir/request.json"
-.venv/bin/python skills/output-presentation/scripts/presentation.py render "$demo_dir/request.json" skills/output-presentation/evals/fixtures/rag-markdown-spec.json --out-dir "$demo_dir/markdown"
-.venv/bin/python skills/output-presentation/scripts/presentation.py render "$demo_dir/request.json" skills/output-presentation/evals/fixtures/rag-svg-spec.json --out-dir "$demo_dir/svg"
-.venv/bin/python skills/output-presentation/scripts/presentation.py render "$demo_dir/request.json" skills/output-presentation/evals/fixtures/rag-html-spec.json --out-dir "$demo_dir/html"
-.venv/bin/python skills/output-presentation/scripts/presentation.py render "$demo_dir/request.json" skills/output-presentation/evals/fixtures/rag-mp4-spec.json --out-dir "$demo_dir/mp4"
+.venv/bin/python skills/output-presentation/examples/understanding/build.py --out-dir "$demo_dir/output"
 .venv/bin/python -m unittest discover -s skills/output-presentation/evals -v
 ```
 
