@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "request_id": "codex-harness-tool-loop",
+  "result_ref": {
+    "result_id": "codex-harness-tool-loop",
+    "revision": "1"
+  },
+  "spec_id": "codex-harness-mp4",
+  "renderer_id": "mp4",
+  "status": "generated",
+  "artifact_refs": [
+    {
+      "ref": "presentation.mp4",
+      "format": "mp4",
+      "media_type": "video/mp4",
+      "sha256": "5838388b662d28cd1ae8e45cb120de607fbad1ce265c7f8ff0252c42b645df75"
+    },
+    {
+      "ref": "guide.html",
+      "format": "html",
+      "media_type": "text/html",
+      "sha256": "2fab4cc78f5cbfe97a1d7e1a36d6bddd246602e706671e076e5d23d09d22030d"
+    }
+  ],
+  "validation_results": [
+    {
+      "check_id": "contracts_and_bindings",
+      "status": "passed",
+      "message": "结构、引用、版本与同目录文件保存已检查"
+    },
+    {
+      "check_id": "writing_rules",
+      "status": "passed",
+      "message": "24 sentences checked; profile ste-inspired; ASD compliance not claimed"
+    },
+    {
+      "check_id": "semantic_review",
+      "status": "not_checked",
+      "message": "人工核对解释和教学示例是否忠于事实"
+    },
+    {
+      "check_id": "visual_review",
+      "status": "not_checked",
+      "message": "打开真实产物检查可读性和导航"
+    },
+    {
+      "check_id": "video_streams",
+      "status": "passed",
+      "message": "ffprobe verified video/subtitles and requested narration audio"
+    }
+  ],
+  "warnings": [
+    "静态检查不证明用户已经理解；人工语义与视觉检查需单独记录。"
+  ],
+  "feature_checks": [
+    {
+      "check_id": "R1",
+      "status": "passed",
+      "message": "理解目标已映射到内容与检查方法"
+    },
+    {
+      "check_id": "R2",
+      "status": "passed",
+      "message": "解释/核验绑定同一版本并保留原始数据"
+    },
+    {
+      "check_id": "R3",
+      "status": "passed",
+      "message": "以拒绝执行的教学假设说明，模型提出调用并不等于实际修改已发生。"
+    },
+    {
+      "check_id": "R4",
+      "status": "passed",
+      "message": "4 个可复制完整任务；未执行外部回调"
+    },
+    {
+      "check_id": "R5",
+      "status": "passed",
+      "message": "first_version；基线已回读恢复"
+    },
+    {
+      "check_id": "R6",
+      "status": "passed",
+      "message": "面向希望看懂 Codex-Harness 的读者，重点讲工具调用的职责、状态和核验入口。"
+    }
+  ],
+  "baseline_receipt": {
+    "ref": "baseline.json",
+    "result_ref": {
+      "result_id": "codex-harness-tool-loop",
+      "revision": "1"
+    },
+    "sha256": "48f8f4d74e1e87756944a2685f16912c7eaf4917a730ad31a125368d39710249",
+    "restored": true
+  },
+  "continuation_refs": [
+    "continuations.json"
+  ]
+}

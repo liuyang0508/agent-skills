@@ -1,0 +1,293 @@
+{
+  "schema_version": "1.0",
+  "spec_id": "codex-harness-svg",
+  "request_id": "codex-harness-tool-loop",
+  "result_ref": {
+    "result_id": "codex-harness-tool-loop",
+    "revision": "1"
+  },
+  "decision": "selected",
+  "rationale": "用同一份固定源码证据，讲解工具调用的分派、执行检查与结果回流；明确区分源码事实、状态解释与教学反例。",
+  "presentation": {
+    "primary": "diagram",
+    "secondary": [
+      "text"
+    ],
+    "format": "svg",
+    "detail_level": "medium"
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "kind": "summary",
+      "source_field": "result.summary",
+      "source_block_ids": [],
+      "visibility": "visible"
+    },
+    {
+      "id": "s2",
+      "kind": "text",
+      "source_block_ids": [
+        "overview"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s3",
+      "kind": "diagram",
+      "source_block_ids": [
+        "flow"
+      ],
+      "visibility": "visible",
+      "learning_aid_ids": [
+        "a-example"
+      ]
+    },
+    {
+      "id": "s4",
+      "kind": "table",
+      "source_block_ids": [
+        "checks"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s5",
+      "kind": "text",
+      "source_block_ids": [
+        "loop"
+      ],
+      "visibility": "visible"
+    },
+    {
+      "id": "s6",
+      "kind": "evidence_and_limits",
+      "source_block_ids": [
+        "overview",
+        "flow",
+        "checks",
+        "loop"
+      ],
+      "visibility": "visible"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect",
+      "operation": "inspect_evidence",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g1",
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "沿固定提交的源码核验模型调用、工具分派、执行检查及结果回流；说明图中省略的边界。"
+    },
+    {
+      "id": "compare",
+      "operation": "compare",
+      "target_block_ids": [
+        "checks"
+      ],
+      "goal_ids": [
+        "g1"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "比较模型提出调用、策略允许执行与工具返回输出，指出各自能证明什么以及还需核验什么。"
+    },
+    {
+      "id": "assume",
+      "operation": "change_assumption",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {
+        "assumption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required_parameters": [
+        "assumption"
+      ],
+      "default_parameters": {
+        "assumption": "命令工具被权限策略拒绝执行"
+      },
+      "prompt_text": "在独立假设场景中说明拒绝执行时的输出与续接；保留真实源码基线，不能补造执行成功记录。"
+    },
+    {
+      "id": "challenge",
+      "operation": "challenge",
+      "target_block_ids": [
+        "flow"
+      ],
+      "goal_ids": [
+        "g2"
+      ],
+      "delivery_mode": "prompt",
+      "parameter_constraints": {},
+      "prompt_text": "挑战这份简化链路，检查并行、取消和长时进程如何影响状态判断；源码没有确认的部分明确列为待核验。"
+    }
+  ],
+  "preservation": {
+    "required_evidence_ids": [
+      "turn-loop",
+      "response-items",
+      "tool-dispatch",
+      "exec-policy",
+      "exec-entry"
+    ],
+    "required_uncertainty_ids": [
+      "scope",
+      "snapshot",
+      "not-run",
+      "interpretation"
+    ],
+    "omitted_block_ids": []
+  },
+  "render_request": {
+    "renderer_id": "svg",
+    "section_ids": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6"
+    ]
+  },
+  "fallback": {
+    "on": [
+      "renderer_unavailable",
+      "render_failed"
+    ],
+    "renderer_id": "markdown",
+    "meets_explicit_format": false
+  },
+  "validation_requirements": [
+    "result_revision_matches",
+    "all_source_references_resolve",
+    "required_evidence_and_limits_present",
+    "diagram_nodes_and_edges_match",
+    "goal_coverage_complete",
+    "views_share_result_revision",
+    "learning_aids_labeled_or_reasoned",
+    "semantic_continuation_usable",
+    "change_status_correct",
+    "session_signals_grounded",
+    "baseline_saved_and_restorable"
+  ],
+  "goal_coverage": [
+    {
+      "goal_id": "g1",
+      "section_ids": [
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "check_method": "指出模型调用与实际执行的分工，并找到输出回到后续模型输入的位置。"
+    },
+    {
+      "goal_id": "g2",
+      "section_ids": [
+        "s3",
+        "s4",
+        "s5",
+        "s6"
+      ],
+      "check_method": "用拒绝执行的假设反例解释为什么调用请求不能当成任务完成。"
+    }
+  ],
+  "views": {
+    "explain": {
+      "id": "explain",
+      "section_ids": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "result_ref": {
+        "result_id": "codex-harness-tool-loop",
+        "revision": "1"
+      }
+    },
+    "verify": {
+      "id": "verify",
+      "section_ids": [
+        "s6"
+      ],
+      "result_ref": {
+        "result_id": "codex-harness-tool-loop",
+        "revision": "1"
+      }
+    }
+  },
+  "learning_aids": [
+    {
+      "id": "a-example",
+      "kind": "counterexample",
+      "target_block_ids": [
+        "flow"
+      ],
+      "content": "假设模型请求写入一个文件，但执行层因权限策略拒绝了操作。即使模型文字说文件已修改，也不能据此认定文件真的改变。",
+      "origin": "generated",
+      "label": "假设示例",
+      "assumptions": [
+        "仅用于区分调用请求、执行结果与任务完成",
+        "没有实际运行或改动文件；不代表真实事故"
+      ],
+      "evidence_ids": []
+    }
+  ],
+  "learning_aids_reason": "以拒绝执行的教学假设说明，模型提出调用并不等于实际修改已发生。",
+  "change_set": {
+    "status": "first_version",
+    "baseline_ref": null,
+    "changes": [],
+    "unchanged_block_ids": []
+  },
+  "adaptation": {
+    "applied_signal_ids": [],
+    "focus_block_ids": [
+      "flow",
+      "checks"
+    ],
+    "deemphasized_block_ids": [],
+    "reason": "面向希望看懂 Codex-Harness 的读者，重点讲工具调用的职责、状态和核验入口。",
+    "check_offer": "offered"
+  },
+  "writing": {
+    "profile": "ste-inspired",
+    "max_sentence_chars": 70,
+    "summary": "模型提出工具调用。Harness 分派工具并处理执行。工具输出写回会话，供后续模型请求继续使用。执行状态与任务完成需要分别核验。",
+    "rewrites": {
+      "overview": "模型提出工具调用。Harness 识别调用，并匹配工具实现。命令类执行还要处理权限与沙箱。正常返回的输出写回会话，供模型继续使用。模型消息与执行状态需要分开核验。",
+      "loop": "工具输出写回会话。后续模型请求使用会话内容。有工具续接或待处理输入时，系统可继续循环。没有续接需求时，还要处理结束逻辑。工具返回结果后，仍需核验任务是否完成。"
+    },
+    "glossary": [
+      {
+        "term": "Harness",
+        "definition": "连接模型交互、会话状态和实际工具执行的运行系统。"
+      },
+      {
+        "term": "工具调用",
+        "definition": "带工具名称、调用标识和参数的操作请求。"
+      },
+      {
+        "term": "结果回流",
+        "definition": "把工具输出记录到会话，供后续模型请求继续使用。"
+      }
+    ]
+  }
+}

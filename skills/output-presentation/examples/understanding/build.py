@@ -1,4 +1,4 @@
-"""Build the four understanding examples into a new output directory."""
+"""Build four presentation formats from an example's source directory."""
 from pathlib import Path
 import argparse
 import json
@@ -15,15 +15,17 @@ import presentation
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out-dir', type=Path, required=True)
+    parser.add_argument('--source-dir', type=Path, default=example / 'source')
     args = parser.parse_args()
     destination = args.out_dir.resolve()
     if destination.exists():
         parser.error('Use a new output directory to preserve existing artifacts.')
 
-    request = presentation.prepare(presentation.read_json(example / 'source/request.json'))
+    source = args.source_dir.resolve()
+    request = presentation.prepare(presentation.read_json(source / 'request.json'))
     destination.mkdir(parents=True)
     for fmt, folder in [('markdown', 'markdown'), ('svg', 'svg'), ('html', 'html'), ('mp4', 'video')]:
-        spec = presentation.read_json(example / f'source/{fmt}-spec.json')
+        spec = presentation.read_json(source / f'{fmt}-spec.json')
         receipt = presentation.render(request, spec, destination / folder)
         print(json.dumps({'format': fmt, 'status': receipt['status']}, ensure_ascii=False), flush=True)
 

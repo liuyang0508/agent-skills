@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "request_id": "codex-harness-tool-loop",
+  "result_ref": {
+    "result_id": "codex-harness-tool-loop",
+    "revision": "1"
+  },
+  "spec_id": "codex-harness-svg",
+  "renderer_id": "svg",
+  "status": "generated",
+  "artifact_refs": [
+    {
+      "ref": "presentation.svg",
+      "format": "svg",
+      "media_type": "image/svg+xml",
+      "sha256": "668951ccd4ca1bbf4677000c1cd7cfe2eeaa06cc302f049070921098f5c2dce8"
+    },
+    {
+      "ref": "guide.html",
+      "format": "html",
+      "media_type": "text/html",
+      "sha256": "ca9133dc94481109a8951d98fabbfe33500e422c7aa443b14827c81fad9d087a"
+    }
+  ],
+  "validation_results": [
+    {
+      "check_id": "contracts_and_bindings",
+      "status": "passed",
+      "message": "结构、引用、版本与同目录文件保存已检查"
+    },
+    {
+      "check_id": "writing_rules",
+      "status": "passed",
+      "message": "14 sentences checked; profile ste-inspired; ASD compliance not claimed"
+    },
+    {
+      "check_id": "semantic_review",
+      "status": "not_checked",
+      "message": "人工核对解释和教学示例是否忠于事实"
+    },
+    {
+      "check_id": "visual_review",
+      "status": "not_checked",
+      "message": "打开真实产物检查可读性和导航"
+    }
+  ],
+  "warnings": [
+    "静态检查不证明用户已经理解；人工语义与视觉检查需单独记录。"
+  ],
+  "feature_checks": [
+    {
+      "check_id": "R1",
+      "status": "passed",
+      "message": "理解目标已映射到内容与检查方法"
+    },
+    {
+      "check_id": "R2",
+      "status": "passed",
+      "message": "解释/核验绑定同一版本并保留原始数据"
+    },
+    {
+      "check_id": "R3",
+      "status": "passed",
+      "message": "以拒绝执行的教学假设说明，模型提出调用并不等于实际修改已发生。"
+    },
+    {
+      "check_id": "R4",
+      "status": "passed",
+      "message": "4 个可复制完整任务；未执行外部回调"
+    },
+    {
+      "check_id": "R5",
+      "status": "passed",
+      "message": "first_version；基线已回读恢复"
+    },
+    {
+      "check_id": "R6",
+      "status": "passed",
+      "message": "面向希望看懂 Codex-Harness 的读者，重点讲工具调用的职责、状态和核验入口。"
+    }
+  ],
+  "baseline_receipt": {
+    "ref": "baseline.json",
+    "result_ref": {
+      "result_id": "codex-harness-tool-loop",
+      "revision": "1"
+    },
+    "sha256": "9d1a768bdb13547a78d0e050446f7da88f5aa25288f05bf7efc66549513e5102",
+    "restored": true
+  },
+  "continuation_refs": [
+    "continuations.json"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "profile": "ste-inspired",
+  "sentences_checked": 14,
+  "violations": [],
+  "glossary": [
+    {
+      "term": "Harness",
+      "definition": "连接模型交互、会话状态和实际工具执行的运行系统。"
+    },
+    {
+      "term": "工具调用",
+      "definition": "带工具名称、调用标识和参数的操作请求。"
+    },
+    {
+      "term": "结果回流",
+      "definition": "把工具输出记录到会话，供后续模型请求继续使用。"
+    }
+  ],
+  "asd_ste100_compliance": "not_claimed",
+  "semantic_review": "requires_review"
+}

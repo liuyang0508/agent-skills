@@ -1,0 +1,52 @@
+{
+  "topic": "Codex-Harness：工具调用怎样执行？",
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "模型提出调用，Harness 承接执行",
+      "source_block_ids": [
+        "overview"
+      ],
+      "on_screen_text": "模型：提出工具调用。\nHarness：分派、执行、记录输出。\n两者的职责需要分清。",
+      "narration": "模型提出工具调用。Harness 负责把调用送到执行层。两者分工不同。",
+      "duration_seconds": 6.833333,
+      "audio_present": true
+    },
+    {
+      "id": "flow",
+      "title": "一次调用，怎样流向执行结果",
+      "source_block_ids": [
+        "flow"
+      ],
+      "highlight_node_ids": [
+        "router",
+        "executor"
+      ],
+      "narration": "调用经过路由与执行层。正常返回的工具输出写回会话，供模型继续使用。",
+      "duration_seconds": 7.5,
+      "audio_present": true
+    },
+    {
+      "id": "checks",
+      "title": "允许执行，不等于执行成功",
+      "source_block_ids": [
+        "checks"
+      ],
+      "on_screen_text": "提出调用：请求执行。\n策略允许：可以尝试执行。\n返回输出：仍需核验任务结果。",
+      "narration": "允许执行不等于执行成功。工具返回结果，也需要核验是否满足任务。",
+      "duration_seconds": 7.083333,
+      "audio_present": true
+    },
+    {
+      "id": "loop",
+      "title": "保留真实结果，继续核验",
+      "source_block_ids": [
+        "loop"
+      ],
+      "on_screen_text": "工具输出进入会话记录。\n后续模型请求使用这些内容。\n按需要续接，核验实际结果。",
+      "narration": "假设写文件被拒绝。模型说写好了，也不能证明文件已改。这是教学反例。",
+      "duration_seconds": 7.458333,
+      "audio_present": true
+    }
+  ]
+}

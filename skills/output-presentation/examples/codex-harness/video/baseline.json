@@ -1,0 +1,216 @@
+{
+  "result": {
+    "result_id": "codex-harness-tool-loop",
+    "revision": "1",
+    "summary": "模型提出工具调用。Harness 分派工具并处理执行。工具输出写回会话，供后续模型请求继续使用。执行状态与任务完成需要分别核验。",
+    "blocks": [
+      {
+        "id": "overview",
+        "kind": "text",
+        "data": {
+          "content": "Codex-Harness 把模型交互、会话内容与工具执行连接起来：它从模型响应中识别工具调用，将名称、调用标识和参数交给工具分派层，由对应实现处理执行；以命令类工具为例，执行路径包含权限与沙箱判断，正常返回的工具输出随后记录到会话中，为后续模型请求提供输入，而模型提出调用或策略允许执行都不能单独证明任务已经完成。"
+        },
+        "evidence_ids": [
+          "turn-loop",
+          "response-items",
+          "tool-dispatch",
+          "exec-policy",
+          "exec-entry"
+        ],
+        "uncertainty_ids": [
+          "scope",
+          "snapshot",
+          "not-run"
+        ]
+      },
+      {
+        "id": "flow",
+        "kind": "relations",
+        "data": {
+          "nodes": [
+            {
+              "id": "model",
+              "label": "模型调用",
+              "definition": "模型响应包含工具名称、调用标识与参数。这是一项调用请求，还不是工具执行成功的证明。"
+            },
+            {
+              "id": "router",
+              "label": "工具分派",
+              "definition": "ToolRouter 识别工具调用，并通过 ToolRegistry 将调用送到相应工具实现。未注册或不匹配的调用可能返回错误。"
+            },
+            {
+              "id": "executor",
+              "label": "执行与检查",
+              "definition": "本例以命令类工具为重点。执行层按权限策略处理批准、拒绝与沙箱选择，再尝试执行。不同工具可能采用不同执行路径。"
+            },
+            {
+              "id": "context",
+              "label": "结果回流",
+              "definition": "正常完成的工具输出写入会话记录。后续模型请求使用会话内容，按需要继续循环。输出仍需对照任务目标核验。"
+            }
+          ],
+          "edges": [
+            {
+              "id": "e1",
+              "from": "model",
+              "to": "router",
+              "label": "发起调用"
+            },
+            {
+              "id": "e2",
+              "from": "router",
+              "to": "executor",
+              "label": "交给实现"
+            },
+            {
+              "id": "e3",
+              "from": "executor",
+              "to": "context",
+              "label": "记录输出"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "turn-loop",
+          "response-items",
+          "tool-dispatch",
+          "exec-policy",
+          "exec-entry"
+        ],
+        "uncertainty_ids": [
+          "scope",
+          "snapshot",
+          "not-run"
+        ]
+      },
+      {
+        "id": "checks",
+        "kind": "comparison",
+        "data": {
+          "columns": [
+            "观察到的状态",
+            "能说明什么",
+            "仍需核验什么"
+          ],
+          "rows": [
+            {
+              "观察到的状态": "模型提出工具调用",
+              "能说明什么": "模型请求执行某项操作",
+              "仍需核验什么": "工具是否真的执行"
+            },
+            {
+              "观察到的状态": "策略允许执行",
+              "能说明什么": "可以进入执行尝试",
+              "仍需核验什么": "执行是否成功返回"
+            },
+            {
+              "观察到的状态": "工具返回输出",
+              "能说明什么": "本次调用有返回结果",
+              "仍需核验什么": "结果是否满足任务目标"
+            }
+          ]
+        },
+        "evidence_ids": [
+          "response-items",
+          "exec-policy",
+          "exec-entry"
+        ],
+        "uncertainty_ids": [
+          "scope",
+          "interpretation",
+          "not-run"
+        ]
+      },
+      {
+        "id": "loop",
+        "kind": "text",
+        "data": {
+          "content": "正常完成的工具输出会被记录。后续模型请求使用会话记录。存在工具续接或待处理输入时，系统可继续循环。没有续接需求时，还会处理结束钩子等逻辑。模型消息、工具调用、进程状态和任务完成需要分别核验。"
+        },
+        "evidence_ids": [
+          "turn-loop",
+          "response-items"
+        ],
+        "uncertainty_ids": [
+          "scope",
+          "snapshot",
+          "interpretation",
+          "not-run"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "turn-loop",
+        "title": "模型轮次与结果回流：run_turn、drain_in_flight",
+        "locator": "https://github.com/openai/codex/blob/da2e174a66a6572204a91373321b7d22d87fb12e/codex-rs/core/src/session/turn.rs#L2471"
+      },
+      {
+        "id": "response-items",
+        "title": "模型响应如何成为工具调用：handle_output_item_done",
+        "locator": "https://github.com/openai/codex/blob/da2e174a66a6572204a91373321b7d22d87fb12e/codex-rs/core/src/stream_events_utils.rs#L315"
+      },
+      {
+        "id": "tool-dispatch",
+        "title": "工具识别与分派：ToolRouter",
+        "locator": "https://github.com/openai/codex/blob/da2e174a66a6572204a91373321b7d22d87fb12e/codex-rs/core/src/tools/router.rs#L250"
+      },
+      {
+        "id": "exec-policy",
+        "title": "命令执行的权限、沙箱与尝试：ToolOrchestrator",
+        "locator": "https://github.com/openai/codex/blob/da2e174a66a6572204a91373321b7d22d87fb12e/codex-rs/core/src/tools/orchestrator.rs#L125"
+      },
+      {
+        "id": "exec-entry",
+        "title": "命令工具如何接入执行编排：Unified Exec",
+        "locator": "https://github.com/openai/codex/blob/da2e174a66a6572204a91373321b7d22d87fb12e/codex-rs/core/src/unified_exec/process_manager.rs#L1464"
+      }
+    ],
+    "uncertainties": [
+      {
+        "id": "scope",
+        "text": "图解是一轮工具调用的简化展开，以命令类工具为重点。省略流式增量、并行、取消、抢占和部分异常路径；不同工具不一定共享同一执行流程。",
+        "affected_block_ids": [
+          "overview",
+          "flow",
+          "checks",
+          "loop"
+        ]
+      },
+      {
+        "id": "snapshot",
+        "text": "依据公开源码固定提交 da2e174a66a6572204a91373321b7d22d87fb12e，日期为2026-10-01；没有将它声明为始终最新的实现。",
+        "affected_block_ids": [
+          "overview",
+          "flow",
+          "loop"
+        ]
+      },
+      {
+        "id": "not-run",
+        "text": "本例是源码讲解，不是执行日志或运行实验。图中没有真实命令、性能统计或成功记录。",
+        "affected_block_ids": [
+          "overview",
+          "flow",
+          "checks",
+          "loop"
+        ]
+      },
+      {
+        "id": "interpretation",
+        "text": "状态对照与完成判断是根据代码路径作出的解释。工具返回输出不能单独证明业务目标已完成；长时命令可能还需要继续读取或等待。",
+        "affected_block_ids": [
+          "checks",
+          "loop"
+        ]
+      }
+    ]
+  },
+  "spec_ref": "codex-harness-mp4",
+  "artifact_refs": [
+    {
+      "ref": "presentation.mp4",
+      "format": "mp4"
+    }
+  ]
+}

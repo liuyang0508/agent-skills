@@ -25,7 +25,7 @@
 
 `ste-inspired` 借鉴受控语言的表达原则，不声明 ASD-STE100 合规。视频适合流程、关系、数据与概念讲解；需要三维场景或物理仿真时，应使用相应的制作工具。
 
-可以直接向 Agent 提问：“把这份结果讲清楚，保留来源和限制，选择最适合的表达方式。”也可以只给主题；Agent 先准备有依据的内容，再生成产物。[RAG 案例](skills/output-presentation/examples/rag/index.html)演示这一过程在具体技术主题上的应用。
+可以直接向 Agent 提问：“把这份结果讲清楚，保留来源和限制，选择最适合的表达方式。”也可以只给主题；Agent 先准备有依据的内容，再生成产物。[Codex-Harness 案例](skills/output-presentation/examples/codex-harness/index.html)沿公开源码讲解工具调用怎样分派、执行和回流，保留固定提交的依据与边界。
 
 四种表达方向参考 [Karpathy 的原帖](https://x.com/karpathy/status/2105819303471976479)。下面的六项理解能力是本 Skill 的设计扩展。
 
