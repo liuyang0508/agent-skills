@@ -3,7 +3,7 @@ name: computer-use
 description: 使用可用的浏览器或桌面工具完成查看、填写、整理、导出等界面任务，按当前授权自主推进并核验保存结果；也指导 Computer Use 的观测、动作、坐标与会话接入。不用于普通页面开发；能用已授权 API 或 CLI 稳定完成的任务优先使用那些工具。
 metadata:
   author: liuyang
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Computer Use

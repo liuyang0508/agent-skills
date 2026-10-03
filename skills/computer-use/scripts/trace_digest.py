@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 KINDS={'observation','action','verification','decision','handoff'}
@@ -58,7 +59,8 @@ def main():
     try:
         result=digest(args.trace.read_bytes(),args.group_size)
         result['raw_ref']=str(args.trace)
-        with args.output.open('x',encoding='utf-8') as stream:
+        descriptor=os.open(args.output,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(descriptor,'w',encoding='utf-8') as stream:
             stream.write(json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
     except (ValueError,OSError) as err:parser.error(str(err))
     print(json.dumps({'indexed':result['event_count'],'attention_count':len(result['attention']),

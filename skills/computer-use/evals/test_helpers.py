@@ -1,6 +1,7 @@
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -58,6 +59,15 @@ class CoordinateTests(unittest.TestCase):
         self.assertEqual(json.loads(r.stdout)['point'],[620,340])
 
 class TraceTests(unittest.TestCase):
+    @unittest.skipUnless(os.name=='posix','POSIX permission check')
+    def test_private_source_does_not_create_a_world_readable_digest(self):
+        with tempfile.TemporaryDirectory() as d:
+            source=Path(d)/'events.ndjson';source.write_bytes(raw([event('a')]))
+            source.chmod(0o600);destination=Path(d)/'digest.json'
+            r=subprocess.run([sys.executable,str(ROOT/'scripts/trace_digest.py'),str(source),'--output',str(destination)],capture_output=True,text=True,preexec_fn=lambda:os.umask(0))
+            self.assertEqual(r.returncode,0,r.stderr)
+            self.assertEqual(destination.stat().st_mode&0o777,0o600)
+
     def test_stage_and_reported_source_survive_indexing(self):
         e=event('x');e.update(step='draft-save',source='screen')
         report=traces.digest(raw([e]))['groups'][0]['first_report']
