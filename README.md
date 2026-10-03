@@ -9,7 +9,7 @@
 | Skill | 用途 | 版本 | 演示与示例 |
 | --- | --- | --- | --- |
 | [output-presentation](skills/output-presentation/README.md) | 将复杂主题和任务结果转成易读、可核验的内容 | 0.2.0 | [动态讲解](https://liuyang0508.github.io/agent-skills/skills/output-presentation/showcase/) · [完整示例](https://liuyang0508.github.io/agent-skills/skills/output-presentation/examples/understanding/) |
-| [computer-use](skills/computer-use/README.md) | 在授权范围内完成浏览器与桌面操作，并核验真实结果 | 0.1.2 | [动态讲解](https://liuyang0508.github.io/agent-skills/skills/computer-use/showcase/) · [实际工作台](https://liuyang0508.github.io/agent-skills/skills/computer-use/examples/draft-workbench/) |
+| [computer-use](skills/computer-use/README.md) | 在授权范围内完成浏览器与桌面操作，并核验真实结果 | 0.1.3 | [动态讲解](https://liuyang0508.github.io/agent-skills/skills/computer-use/showcase/) · [实际工作台](https://liuyang0508.github.io/agent-skills/skills/computer-use/examples/draft-workbench/) |
 
 ## 安装
 
