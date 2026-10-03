@@ -1,0 +1,6 @@
+{
+  "frame_id": "teaching-crop-1",
+  "coordinate_space": "viewport_css_pixels",
+  "image_rect": [32, 24, 1280, 720],
+  "tool_rect": [300, 160, 640, 360]
+}

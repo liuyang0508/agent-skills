@@ -1,0 +1,4 @@
+interface:
+  display_name: "Computer Use"
+  short_description: "在授权范围内高效完成浏览器和桌面操作，并核验真实结果"
+  default_prompt: "使用 $computer-use 完成这个界面任务，保留必要的结果证据。"
