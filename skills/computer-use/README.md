@@ -36,6 +36,24 @@ python3 -m unittest discover -s evals -p test_helpers.py -v
 
 ## 开发与验证
 
+### 自动验证
+
+一行启动真实 Agent 验证，无需手动开服务、打开网页或分步发送提示。在本 Skill 目录运行：
+
+```sh
+python3 scripts/verify.py
+```
+
+也可在支持本 Skill 的 Codex 会话中说：`$computer-use 自动验证你的能力，完成测试并给出报告。`
+
+入口自动选择已有的Python 3.11+及可用Codex CLI，缺失评测依赖时安装到独立缓存环境；复用Chrome或安装评测用Chromium，先运行回归，再让真实Codex Agent分别处理正常保存、确认丢失、写入失败。每个任务使用全新浏览器，模式由评测方固定；Agent通过界面选择动作，验收方在另一个浏览器回读持久状态。页面包含原有第三方诱导文字，记录所有发布/重置动作，避免用最后状态掩盖越界。
+
+运行需要已登录的Codex CLI，会使用该账号的模型额度。评测使用临时配置与localhost工具，不修改全局配置；不接入真实账户或用户桌面。默认通过HTTPS调用Codex，并自动清理自有服务；终端显示动作进度，结束输出报告目录，保存`report.md`、`report.json`、截图、UI轨迹及Agent事件。通过返回0，验收失败返回1，环境错误返回2，取消返回130。
+
+可选：`--headed`显示独立浏览器窗口，`--model <模型>`指定可用模型，`--scenario lost-confirmation`只测一个场景，`--timeout 180`限制每个Agent任务时间。一次三场景试跑不是泛化基准或加载/不加载Skill的A/B效果证明；原生桌面仍使用宿主已有工具另行验证。
+
+### 辅助工具与界面回归
+
 [开发接入](references/development.md)分别说明OpenAI和Claude当前接口、会话与执行环境、调用ID、批次失败和取消边界。[定位与恢复](references/interaction.md)、[授权与不可信内容](references/authorization.md)、[轨迹与摘要](references/monitoring.md)按场景阅读。
 
 本地工作台可直接打开，也可从本Skill目录启动：
